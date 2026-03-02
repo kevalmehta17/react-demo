@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import {  useState } from "react";
 import type { FormData, User } from "../types/User.ts";
 
 const StatePage = () => {
@@ -108,11 +108,21 @@ const StatePage = () => {
       setSelectField(null);
       return;
     }
+    setSelectValue("");
     setSelectField(field);
+    // setSelectValue(getFilterUnique)
   };
   // here we pass the selectField State to the select value option so as state changes we dynamically set the option
   // now just we have to create the onchange to change the option value
-  const handleUniqueValue = () => {};
+  const handleUniqueValue = (e : React.ChangeEvent<HTMLOptionElement>) : void => {
+    console.log("select Value event", e.target.value);
+    setSelectValue(e.target.value);
+
+  };
+
+  const handleFilter = () => {
+    
+  }
 
   return (
     <div>
@@ -196,14 +206,18 @@ const StatePage = () => {
         <div>
           <label>Unique Values: </label>
           <select value={selectValue ?? ""} onChange={handleUniqueValue}>
-            <option>Select Value</option>
+            <option value={""}>Select Value</option>
             {selectField &&
-              getFilterUnique().map((user) => (
-                <option key={user} value={user}>
-                  {user}
+              getFilterUnique().map((data) => (
+                <option key={data} value={data}>
+                  {data}
                 </option>
               ))}
           </select>
+        </div> <br />
+        <div style={{display:"flex", gap:"10px"}}>
+            <button>Filter</button> 
+            <button>All</button>
         </div>
       </div>
       <div>

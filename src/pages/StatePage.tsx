@@ -20,8 +20,8 @@ const StatePage = () => {
     uniqueVal: "",
   });
 
-  const displayUsers: User[] =
-    appliedFilter.field && appliedFilter.uniqueVal
+  const displayUsers = (): User[] => {
+    return appliedFilter.field && appliedFilter.uniqueVal
       ? users.filter((user) => {
           if (appliedFilter.field === "age") {
             return user.age === Number(appliedFilter.uniqueVal);
@@ -34,6 +34,26 @@ const StatePage = () => {
           }
         })
       : users;
+  };
+
+  // checks if nextUsers still has any match for appliedFilter; resets filter if not
+  const resetFilterIfNoMatch = (nextUsers: User[]) => {
+    if (!appliedFilter.field || !appliedFilter.uniqueVal) return;
+    const stillMatches = nextUsers.some((user) => {
+      if (appliedFilter.field === "age") {
+        return user.age === Number(appliedFilter.uniqueVal);
+      }
+      return (
+        user[appliedFilter.field as keyof User]
+          .toString()
+          .toLowerCase() === appliedFilter.uniqueVal
+      );
+    });
+    if (!stillMatches) {
+      setAppliedFilter((prev) => ({ ...prev, uniqueVal: "" }));
+      setSelectValue("");
+    }
+  };
 
   const handleFilterButton = () => {
     if (!selectField || !selectValue) {
@@ -93,11 +113,11 @@ const StatePage = () => {
         return;
       }
       // IF IT FOUND THEN
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === selectedId ? { ...user, userName, city, age } : user,
-        ),
+      const nextUsers = users.map((user) =>
+        user.id === selectedId ? { ...user, userName, city, age } : user,
       );
+      resetFilterIfNoMatch(nextUsers);
+      setUsers(nextUsers);
       setMode("save");
     }
     const resetForm = e.currentTarget;
@@ -141,7 +161,9 @@ const StatePage = () => {
 
   // HANDLE DELETE
   const handleDelete = () => {
-    setUsers((prev) => prev.filter((user) => user.id !== selectedId));
+    const nextUsers = users.filter((user) => user.id !== selectedId);
+    resetFilterIfNoMatch(nextUsers);
+    setUsers(nextUsers);
     setFormData({ userName: "", city: "", age: 0 });
     setMode("save");
     setSelectedId(null);
@@ -276,7 +298,7 @@ const StatePage = () => {
           </thead>
           <tbody>
             {users &&
-              displayUsers.map((user) => (
+              displayUsers().map((user) => (
                 <tr key={user.id}>
                   <td>{user.userName}</td>
                   <td>{user.city}</td>
@@ -291,4 +313,3 @@ const StatePage = () => {
 };
 
 export default StatePage;
-// in statePage issue is when filter is applied then if i enter new user i dont have to show new user data untill all aplied and field and value become empty, and also when filter applied and user update data then again i have to re-render table based on it bcz what if current filtered showinf data changes then? give me hint just how to write in plain english and solve my self?

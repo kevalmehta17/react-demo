@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import type { FormData, User } from "../types/User.ts";
 
 const StatePage = () => {
@@ -9,16 +9,59 @@ const StatePage = () => {
   const [formData, setFormData] = useState<FormData>({
     userName: "",
     city: "",
-    age: Number(0),
+    age: 0,
   });
   const [mode, setMode] = useState<string>("save");
+  const [appliedFilter, setAppliedFilter] = useState<{
+    field: keyof FormData | null;
+    uniqueVal: string;
+  }>({
+    field: null,
+    uniqueVal: "",
+  });
 
-  const getFilterUnique = (): string[] => {
+  const displayUsers: User[] =
+    appliedFilter.field && appliedFilter.uniqueVal
+      ? users.filter((user) => {
+          if (appliedFilter.field === "age") {
+            return user.age === Number(appliedFilter.uniqueVal);
+          } else {
+            return (
+              user[appliedFilter.field as keyof User]
+                .toString()
+                .toLowerCase() === appliedFilter.uniqueVal
+            );
+          }
+        })
+      : users;
+
+  const handleFilterButton = () => {
+    if (!selectField || !selectValue) {
+      alert("Please select both field and value to apply filter");
+      return;
+    }
+    setAppliedFilter({
+      field: selectField,
+      uniqueVal: selectValue.toLowerCase(),
+    });
+  };
+    
+
+  const handleAllButton = () => {
+    setAppliedFilter({ field: null, uniqueVal: "" });
+    setSelectField(null);
+    setSelectValue("");
+  };
+
+  const getFilterUnique = (): (string | number)[] => {
     if (!selectField) return [];
-    const newUser = users.map((user) =>
-      String(user[selectField]).toLowerCase(),
-    );
-    return [...new Set(newUser)];
+    if (selectField === "age") {
+      const newUser = users.map((user) => user[selectField]);
+      return [...new Set(newUser)];
+    } else {
+      const newUser = users.map((user) => user[selectField].toLowerCase());
+      return [...new Set(newUser)];
+    }
   };
 
   // HANDLING THE SUBMIT
@@ -29,17 +72,19 @@ const StatePage = () => {
 
     const userName = (data.get("userName") as string).trim();
     const city = (data.get("cityName") as string).trim();
-    const age = Number(data.get("ageData") as string);
+    const age = Number(data.get("ageData"));
 
     if (!userName || !city || age <= 0) {
       alert("Please Enter valid input data");
       console.log("Please Enter valid input data");
       return;
     }
+    // WORKING WITH SAVE MODE:-
     if (mode === "save") {
       setUsers((prev) => [...prev, { id: +new Date(), userName, city, age }]);
-      console.log("upd state", users);
+      console.log("state after save", users);
     }
+    // WORKING WITH UPDATE MODE:-
     if (mode === "update") {
       const updUser = users.find((user) => user.id === selectedId);
       if (!updUser) {
@@ -47,7 +92,7 @@ const StatePage = () => {
         console.log("No user found for this userID");
         return;
       }
-      // if it found then
+      // IF IT FOUND THEN
       setUsers((prev) =>
         prev.map((user) =>
           user.id === selectedId ? { ...user, userName, city, age } : user,
@@ -94,35 +139,33 @@ const StatePage = () => {
     console.log("users State", users);
   };
 
-  //   HANDLE DELETE
+  // HANDLE DELETE
   const handleDelete = () => {
     setUsers((prev) => prev.filter((user) => user.id !== selectedId));
     setFormData({ userName: "", city: "", age: 0 });
     setMode("save");
     setSelectedId(null);
   };
+  // HANDLING THE SELECT FIELD
   const handleSelectField = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     console.log("select Field event", e.target.value);
-    const field = e.target.value as keyof FormData;
-    if (!field) {
+    const fieldVal = e.target.value as keyof FormData;
+    if (!fieldVal) {
       setSelectField(null);
       return;
     }
     setSelectValue("");
-    setSelectField(field);
-    // setSelectValue(getFilterUnique)
+    setSelectField(fieldVal);
+    console.log("fieldVal Active", fieldVal)
   };
   // here we pass the selectField State to the select value option so as state changes we dynamically set the option
   // now just we have to create the onchange to change the option value
-  const handleUniqueValue = (e : React.ChangeEvent<HTMLOptionElement>) : void => {
+  const handleUniqueValue = (e: React.ChangeEvent<HTMLOptionElement>): void => {
     console.log("select Value event", e.target.value);
-    setSelectValue(e.target.value);
-
+    const uniqueValue = e.target.value;
+    setSelectValue(uniqueValue);
+    console.log("uniqueValue", uniqueValue)
   };
-
-  const handleFilter = () => {
-    
-  }
 
   return (
     <div>
@@ -155,7 +198,7 @@ const StatePage = () => {
         <div>
           <label>Age: </label>
           <input
-            type="text"
+            type="number"
             name="ageData"
             value={formData.age}
             onChange={(e) =>
@@ -214,10 +257,11 @@ const StatePage = () => {
                 </option>
               ))}
           </select>
-        </div> <br />
-        <div style={{display:"flex", gap:"10px"}}>
-            <button>Filter</button> 
-            <button>All</button>
+        </div>{" "}
+        <br />
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button onClick={handleFilterButton}>Filter</button>
+          <button onClick={handleAllButton}>All</button>
         </div>
       </div>
       <div>
@@ -232,7 +276,7 @@ const StatePage = () => {
           </thead>
           <tbody>
             {users &&
-              users.map((user) => (
+              displayUsers.map((user) => (
                 <tr key={user.id}>
                   <td>{user.userName}</td>
                   <td>{user.city}</td>
@@ -247,5 +291,4 @@ const StatePage = () => {
 };
 
 export default StatePage;
-// here the issue is i have to render the unique values like if one user enters "Keval" and another "keval" then in unique value we have to always show one value not duplicate and in unique value we always return in options in small
-// but im selecting unique value based on field dynamically.
+// in statePage issue is when filter is applied then if i enter new user i dont have to show new user data untill all aplied and field and value become empty, and also when filter applied and user update data then again i have to re-render table based on it bcz what if current filtered showinf data changes then? give me hint just how to write in plain english and solve my self?

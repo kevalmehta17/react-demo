@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./layout/RootLayout.tsx";
-import StatePage from "./pages/StatePage.tsx";
+import StatePage from "./State/Pages/StatePage.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
-import ContextPage from "./pages/ContextPage.tsx";
+import ContextPage from "./Context/Pages/ContextPage.tsx";
 import ReduxPage from "./pages/ReduxPage.tsx";
 
 const router = createBrowserRouter([

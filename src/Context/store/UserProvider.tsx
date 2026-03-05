@@ -39,6 +39,7 @@ const reducerFun = (state, action) => {
     return { ...state, mode: "save", users: updatedUser, selectedId : null };
   }
 
+  
   // FOR UPDATING INPUT VALUE AT EACH KEY STROKE
   if (action.type === "CHANGE_FORM_VALUE") {
     console.log("formvalue", state.formValue);

@@ -15,18 +15,4 @@ const ContextPage = () => {
   )
 }
 
-export default ContextPage
-
-// src/Context/
-// ├── store/
-// │   ├── UserContext.tsx       ← createContext + type for context value
-// │   └── UserProvider.tsx      ← useReducer + handler logic + <Provider>
-// │
-// ├── components/
-// │   ├── UserForm.tsx          ← form (add / update mode)
-// │   ├── UserSelectId.tsx        ← dropdown to select user for edit/delete
-// │   ├── FilterPanel.tsx       ← field selector + unique value filter + buttons
-// │   └── UserTableList.tsx          ← renders filtered user rows/table
-// │
-// └── Pages/
-//     └── ContextPage.tsx       ← wraps with <UserProvider>, composes components
+export default ContextPage;

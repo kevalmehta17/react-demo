@@ -3,7 +3,7 @@ import RootLayout from "./layout/RootLayout.tsx";
 import StatePage from "./State/Pages/StatePage.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import ContextPage from "./Context/Pages/ContextPage.tsx";
-import ReduxPage from "./pages/ReduxPage.tsx";
+import ReduxPage from "../src/Redux/pages/ReduxPage.tsx";
 
 const router = createBrowserRouter([
   {

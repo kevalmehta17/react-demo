@@ -88,6 +88,9 @@ const reducerFun = (state, action) => {
   if(action.type === "HANDLE_ALL_BUTTON"){
     state.appliedFilter.field = "";
     state.appliedFilter.uniqueVal = "";
+    state.selectField = "";
+    state.selectValue = "";
+    console.log("after all", state);
     return {...state};
   }
 

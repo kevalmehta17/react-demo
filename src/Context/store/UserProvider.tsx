@@ -35,7 +35,7 @@ const reducerFun = (state, action) => {
 
   //    FOR DELETING USER IN USERS ARRAY
   if (action.type === "DELETE_USER") {
-    const updatedUser = state.users.filter((user) => user.id !== action.payload);
+    const updatedUser = state.users.filter((user : User) => user.id !== action.payload);
     return { ...state, mode: "save", users: updatedUser, selectedId : null };
   }
 
@@ -58,7 +58,6 @@ const reducerFun = (state, action) => {
   // SHOW INPUT DATA INPUT FIELD
   if(action.type === "SHOW_INPUT_DATA"){
     const showData = state.users.find((user : User) =>  user.id === action.payload);
-    console.log("we found the user based on id is:-", showData);
     state.formValue = {userName : showData.userName, city: showData.city, age:showData.age};
     return {...state, mode:"update"}
   }
@@ -70,11 +69,33 @@ const reducerFun = (state, action) => {
 
   // HANDLE CHANGE FIELD DATA
   if(action.type === "CHANGE_FIELD"){
+    state.selectValue = "";
     return {...state, selectField : action.payload};
   }
   // HANDLE CHANGE VALUE DATA
   if(action.type === "CHANGE_VALUE"){
     return {...state, selectValue : action.payload};
+  }
+
+  // HANDLE FILTER BUTTON
+  if(action.type === "HANDLE_FILTER_BUTTON"){
+    state.appliedFilter.field = state.selectField;
+    state.appliedFilter.uniqueVal = state.selectValue;
+    return {...state};
+  }
+
+  // HANDLE ALL BUTTON
+  if(action.type === "HANDLE_ALL_BUTTON"){
+    state.appliedFilter.field = "";
+    state.appliedFilter.uniqueVal = "";
+    return {...state};
+  }
+
+  // HANDLE NO ID SELECTED
+  if(action.type === "SELECT_ID_NULL"){
+    console.log("inside the SELECT_ID_NULL");
+    state.formValue = {userName : "", city: "", age : 0};
+    return {...state, selectedId : null, mode:"save"};
   }
 };
 

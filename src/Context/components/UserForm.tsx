@@ -29,12 +29,16 @@ const UserForm = () => {
     if (modeVal === "update") {
       const formData = { userName, city, age };
       console.log("the formData we got is", formData);
-      console.log("the id we are dispatching is", state.selectedId)
-      dispatch({ type: "UPDATE_USER", payload: formData, id: state.selectedId });
+      console.log("the id we are dispatching is", state.selectedId);
+      dispatch({
+        type: "UPDATE_USER",
+        payload: formData,
+        id: state.selectedId,
+      });
     }
     const resetForm = e.currentTarget;
     resetForm.reset();
-    dispatch({type: "CLEAR_INPUT_DATA"});
+    dispatch({ type: "CLEAR_INPUT_DATA" });
   };
 
   const handleFormValue = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -50,9 +54,9 @@ const UserForm = () => {
   };
 
   const handleDelete = () => {
-    dispatch({type : "DELETE_USER", payload : state.selectedId });
-    dispatch({type: "CLEAR_INPUT_DATA"});
-  }
+    dispatch({ type: "DELETE_USER", payload: state.selectedId });
+    dispatch({ type: "CLEAR_INPUT_DATA" });
+  };
 
   return (
     <div>
@@ -95,11 +99,7 @@ const UserForm = () => {
           {modeVal === "update" && (
             <>
               <button type="submit">Update</button>
-              <button
-                type="button"
-                onClick={handleDelete
-                }
-              >
+              <button type="button" onClick={handleDelete}>
                 Delete
               </button>
             </>

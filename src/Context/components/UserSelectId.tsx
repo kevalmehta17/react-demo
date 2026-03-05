@@ -6,6 +6,12 @@ const UserSelectId = () => {
 
   const handleId = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const id = Number(e.target.value);
+    console.log("selected id in select id component", id);
+    // EDGE CASE
+    if(!id){
+      dispatch({type:"SELECT_ID_NULL", payload: null});
+      return;
+    }
     console.log("id is:-", id);
 
     dispatch({ type: "SELECT_ID", payload: id });

@@ -1,9 +1,12 @@
 import { useContext } from "react";
 import UserContext from "../store/UserContext.tsx";
+import type { User } from "../../types/User.ts";
 
 const FilterPanel = () => {
+
   const { state, dispatch } = useContext(UserContext);
-  console.log("state inside filterPanel", state);
+  // console.log("state inside filterPanel", state);
+  console.log("re-rendering")
   const fieldData = ["userName", "city", "age"];
 
   const handleSelectField = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -18,17 +21,29 @@ const FilterPanel = () => {
 
   const getFilterUnique = (): (string | number)[] => {
     if (!state.selectField) return [];
+    const field = state.selectField as keyof User;
     if (state.selectField === "age") {
-      const newUser = state.users.map((user) => user[state.selectField]);
-      // console.log("newUser")
+      const newUser = state.users.map((user : User) => user[field]);
       return [...new Set(newUser)];
     } else {
       const newUser = state.users.map((user) =>
-        user[state.selectField].toLowerCase(),
+        user[field].toString().toLowerCase(),
       );
       return [...new Set(newUser)];
     }
   };
+
+  const handleFilter = () => {
+    if(!state.selectField || !state.selectValue){
+      alert("Please Fill all the input field");
+      return;
+    }
+    dispatch({type:"HANDLE_FILTER_BUTTON"})
+  }
+
+  const handleAll = () => {
+    dispatch({type : "HANDLE_ALL_BUTTON"});
+  }
 
   return (
     <div>
@@ -48,7 +63,7 @@ const FilterPanel = () => {
         <br />
         <div>
           <label>Unique Value: </label>
-          <select>
+          <select value={state.selectValue ?? ""} onChange={handleSelectValue}>
             <option value="">Select Value</option>
             {getFilterUnique().map((user) => (
               <option value={user} key={user}>{user}</option>
@@ -58,8 +73,8 @@ const FilterPanel = () => {
       </div>
       <br />
       <div style={{ display: "flex", gap: "10px" }}>
-        <button>Filter</button>
-        <button>All</button>
+        <button onClick={handleFilter}>Filter</button>
+        <button onClick={handleAll}>All</button>
       </div>
     </div>
   );

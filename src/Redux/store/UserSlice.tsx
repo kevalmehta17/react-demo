@@ -6,10 +6,7 @@ const initialState = {
   users: [] as User[],
   formValue: { userName: "", city: "", age: 0 },
   mode: "save",
-  appliedFilter: { field: "", uniqueVal: "" },
   selectedId: null,
-  selectField: null,
-  selectValue: "",
 };
 
 export const UserSlice = createSlice({
@@ -20,27 +17,52 @@ export const UserSlice = createSlice({
       state.users.push(action.payload);
       console.log("after add user", current(state.users));
     },
-    updateUser: (state) => {},
-    deleteUser: (state) => {},
+    updateUser: (
+      state,
+      action: PayloadAction<{ formData: FormData; id: number }>,
+    ) => {
+      const { formData, id } = action.payload;
+      // const findUser = state.users.find((user) => user.id === id);
+      state.users = state.users.map((user) =>
+        user.id === id ? { ...user, ...formData } : user,
+      );
+      console.log("after update user", state.users);
+      state.mode = "save";
+    },
+    deleteUser: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      state.users = state.users.filter((user) => user.id !== id);
+      console.log("after delete user", state.users);
+    },
     changeFormValue: (state, action: PayloadAction<FormData>) => {
       state.formValue[action.payload.field] = action.payload.value;
       console.log("field value", current(state.formValue));
     },
-    selectId: (state,action : PayloadAction<number>) => {
-        state.selectedId = action.payload;
-        // console.log("after selectedId", state)
+    selectId: (state, action: PayloadAction<number>) => {
+      state.selectedId = action.payload;
+      state.mode = "update";
+      // console.log("after selectedId", state)
     },
-    showInputData: (state) => {},
+    showInputData: (state) => {
+      const findUser = state.users.find((user) => user.id === state.selectedId);
+      if (!findUser) return;
+      state.formValue = {
+        userName: findUser.userName,
+        city: findUser.city,
+        age: findUser.age,
+      };
+      console.log("after showInputData", state.formValue);
+    },
 
     clearInputData: (state) => {
       state.formValue = { userName: "", city: "", age: 0 };
       console.log("clear", current(state));
     },
-    changeField: (state) => {},
-    changeValue: (state) => {},
-    handleFilterButton: (state) => {},
-    handleAllButton: (state) => {},
-    selectIdNull: (state) => {},
+
+    selectIdNull: (state) => {
+      state.selectedId = null;
+      state.mode = "save";
+    },
   },
 });
 
@@ -52,10 +74,6 @@ export const {
   selectId,
   showInputData,
   clearInputData,
-  changeField,
-  changeValue,
-  handleFilterButton,
-  handleAllButton,
   selectIdNull,
 } = UserSlice.actions;
 

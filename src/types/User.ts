@@ -12,3 +12,7 @@ export interface FormData{
 }
 
 
+export interface UserStringOnly {
+    userName : string;
+    city : string;
+}

@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addUser, changeFormValue, clearInputData } from "../store/UserSlice";
+import { addUser, changeFormValue, clearInputData, deleteUser, selectIdNull, updateUser } from "../store/UserSlice";
 
 const UserForm = () => {
   const modeVal = useSelector(state => state.user.mode);
   const dispatch = useDispatch();
   const formValue = useSelector(state => state.user.formValue);
+  const id = useSelector(state => state.user.selectedId);
 
 
   const handleSubmit = (e : React.FormEvent<HTMLFormElement>) : void =>{
@@ -23,6 +24,12 @@ const UserForm = () => {
         const formData = {id : +new Date(), userName, city, age};
         dispatch(addUser(formData));
     }
+    
+    if(modeVal === "update"){
+      const formData = {userName, city, age};
+      dispatch(updateUser({formData, id}))
+      dispatch(selectIdNull());
+    }
     dispatch(clearInputData());
   }
 
@@ -32,6 +39,13 @@ const UserForm = () => {
     const value : string | number = e.target.value;
     console.log("value", value);
     dispatch(changeFormValue({field, value}));
+  }
+
+  const handleDelete = () : void => {
+    if(!id) return;
+    dispatch(deleteUser(id));
+    dispatch(selectIdNull());
+    dispatch(clearInputData());
   }
 
   return (
@@ -64,7 +78,7 @@ const UserForm = () => {
           {modeVal === "update" && (
             <>
               <button type="submit">Update</button>
-              <button type="button">Delete</button>
+              <button type="button" onClick={handleDelete}>Delete</button>
             </>
           )}
         </form>

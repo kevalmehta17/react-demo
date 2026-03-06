@@ -1,6 +1,6 @@
-import { useReducer, useState, type ReactNode } from "react";
+import { useReducer, type ReactNode } from "react";
 import UserContext from "./UserContext.tsx";
-import type { FormData, User } from "../../types/User.ts";
+import type { User } from  "../../../types/User.ts";
 
 const initialState = {
   users: [],
@@ -12,7 +12,7 @@ const initialState = {
     uniqueVal: "",
   },
   selectField: null,
-  selectValue: "",
+  selectValue: null,
 };
 
 const reducerFun = (state, action) => {
@@ -70,7 +70,7 @@ const reducerFun = (state, action) => {
 
   // HANDLE CHANGE FIELD DATA
   if(action.type === "CHANGE_FIELD"){
-    state.selectValue = "";
+    state.selectValue = null;
     return {...state, selectField : action.payload};
   }
   // HANDLE CHANGE VALUE DATA

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   selectField:  null,
-  selectValue: "",
+  selectValue: null,
   appliedFilter: { field: "", uniqueVal: "" },
 };
 
@@ -26,7 +26,7 @@ export const FilterSlice = createSlice({
     },
     handleAllButton: (state) => {
       state.selectField = null;
-      state.selectValue = "";
+      state.selectValue = null;
       state.appliedFilter.field = "";
       state.appliedFilter.uniqueVal = "";
     },

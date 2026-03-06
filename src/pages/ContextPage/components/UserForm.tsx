@@ -16,7 +16,7 @@ const UserForm = () => {
     const city = (data.get("city") as string).trim();
     const age = Number(data.get("age"));
 
-    if (!userName || !city || !age) {
+    if (!userName || !city || age <= 0) {
       alert("Enter all data properly");
       console.log("Enter all data properly");
       return;

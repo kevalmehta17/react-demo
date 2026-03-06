@@ -26,7 +26,7 @@ const FilterPanel = () => {
       const newUser = state.users.map((user : User) => user[field]);
       return [...new Set(newUser)];
     } else {
-      const newUser = state.users.map((user) =>
+      const newUser = state.users.map((user : User) =>
         user[field].toString().toLowerCase(),
       );
       return [...new Set(newUser)];

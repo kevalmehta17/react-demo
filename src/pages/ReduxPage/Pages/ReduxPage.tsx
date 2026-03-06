@@ -1,10 +1,9 @@
-import React from 'react'
-import { Provider } from 'react-redux'
-import { store } from '../store/UserStore'
-import UserForm from '../components/UserForm'
-import UserSelectId from '../components/UserSelectId'
-import FilterPanel from '../components/FilterPanel'
-import UserTableList from '../components/UserTableList'
+import { Provider } from "react-redux";
+import { store } from "../store/UserStore";
+import UserForm from "../components/UserForm";
+import UserSelectId from "../components/UserSelectId";
+import UserTableList from "../components/UserTableList";
+import FilterPanel from "../components/FilterPanel";
 
 const ReduxPage = () => {
   return (
@@ -14,7 +13,7 @@ const ReduxPage = () => {
       <FilterPanel />
       <UserTableList />
     </Provider>
-  )
-}
+  );
+};
 
-export default ReduxPage
+export default ReduxPage;

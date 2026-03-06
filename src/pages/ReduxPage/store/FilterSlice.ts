@@ -11,6 +11,7 @@ export const FilterSlice = createSlice({
   initialState,
   reducers: {
     changeField: (state, action) => {
+      state.selectValue  = null;
       state.selectField  = action.payload;
       console.log("after updating field", state.selectField);
     },

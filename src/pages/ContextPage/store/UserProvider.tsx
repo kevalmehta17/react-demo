@@ -1,8 +1,9 @@
 import { useReducer, type ReactNode } from "react";
 import UserContext from "./UserContext.tsx";
-import type { User } from  "../../../types/User.ts";
+import type { User, UserAction } from  "../../../types/User.ts";
+import type { InitialStateType } from "../../../types/User.ts";
 
-const initialState = {
+const initialState : InitialStateType = {
   users: [],
   formValue: { userName: "", city: "", age: 0 },
   selectedId: null,
@@ -15,7 +16,7 @@ const initialState = {
   selectValue: null,
 };
 
-const reducerFun = (state, action) => {
+const reducerFun = (state : InitialStateType, action : UserAction) : InitialStateType => {
 
   //   FOR ADDING USER TO USERS ARRAY
   if (action.type === "ADD_USER") {
@@ -59,6 +60,7 @@ const reducerFun = (state, action) => {
   // SHOW INPUT DATA INPUT FIELD
   if(action.type === "SHOW_INPUT_DATA"){
     const showData = state.users.find((user : User) =>  user.id === action.payload);
+    if(!showData) return state;
     state.formValue = {userName : showData.userName, city: showData.city, age:showData.age};
     return {...state, mode:"update"}
   }
@@ -81,16 +83,16 @@ const reducerFun = (state, action) => {
   // HANDLE FILTER BUTTON
   if(action.type === "HANDLE_FILTER_BUTTON"){
     state.appliedFilter.field = state.selectField;
-    state.appliedFilter.uniqueVal = state.selectValue;
+    state.appliedFilter.uniqueVal = state.selectValue ?? "";
     return {...state};
   }
 
   // HANDLE ALL BUTTON
   if(action.type === "HANDLE_ALL_BUTTON"){
-    state.appliedFilter.field = "";
+    state.appliedFilter.field = null;
     state.appliedFilter.uniqueVal = "";
-    state.selectField = "";
-    state.selectValue = "";
+    state.selectField = null;
+    state.selectValue = null;
     console.log("after all", state);
     return {...state};
   }
@@ -101,6 +103,8 @@ const reducerFun = (state, action) => {
     state.formValue = {userName : "", city: "", age : 0};
     return {...state, selectedId : null, mode:"save"};
   }
+
+  return state;
 };
 
 const UserProvider = ({ children }: { children: ReactNode }) => {

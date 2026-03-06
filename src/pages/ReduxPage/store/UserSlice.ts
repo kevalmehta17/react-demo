@@ -1,12 +1,12 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import type { User, FormData } from "../../types/User";
+import type { User, FormData } from "../../../types/User.ts";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   users: [] as User[],
   formValue: { userName: "", city: "", age: 0 },
   mode: "save",
-  selectedId: null,
+  selectedId: null as number | null,
 };
 
 export const UserSlice = createSlice({
@@ -34,8 +34,8 @@ export const UserSlice = createSlice({
       state.users = state.users.filter((user) => user.id !== id);
       console.log("after delete user", state.users);
     },
-    changeFormValue: (state, action: PayloadAction<FormData>) => {
-      state.formValue[action.payload.field] = action.payload.value;
+    changeFormValue: (state, action: PayloadAction<{ field: keyof FormData; value: string | number }>) => {
+      state.formValue[action.payload.field] = action.payload.value as never;
       console.log("field value", current(state.formValue));
     },
     selectId: (state, action: PayloadAction<number>) => {

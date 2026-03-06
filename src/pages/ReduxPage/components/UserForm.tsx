@@ -1,52 +1,62 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addUser, changeFormValue, clearInputData, deleteUser, selectIdNull, updateUser } from "../store/UserSlice";
+import type { ChangeEvent, FormEvent } from "react";
+import type { FormData as UserFormData } from "../../../types/User";
+import type { RootState } from "../store/UserStore";
+import {
+  addUser,
+  changeFormValue,
+  clearInputData,
+  deleteUser,
+  selectIdNull,
+  updateUser,
+} from "../store/UserSlice";
 
 const UserForm = () => {
-  const modeVal = useSelector(state => state.user.mode);
+  const modeVal = useSelector((state: RootState) => state.users.mode);
+  const formValue = useSelector((state: RootState) => state.users.formValue);
+  const id = useSelector((state: RootState) => state.users.selectedId);
   const dispatch = useDispatch();
-  const formValue = useSelector(state => state.user.formValue);
-  const id = useSelector(state => state.user.selectedId);
 
-
-  const handleSubmit = (e : React.FormEvent<HTMLFormElement>) : void =>{
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
 
     const userName = (data.get("userName") as string).trim();
-    const city = (data.get('city') as string).trim();
+    const city = (data.get("city") as string).trim();
     const age = Number(data.get("age"));
-    // check the Validation
-    if(!userName || !city || age <= 0){
-        alert("Fill Every Field");
-        return;
+
+    if (!userName || !city || age <= 0) {
+      alert("Fill Every Field");
+      return;
     }
-    if(modeVal === "save"){
-        const formData = {id : +new Date(), userName, city, age};
-        dispatch(addUser(formData));
+
+    if (modeVal === "save") {
+      dispatch(addUser({ id: Date.now(), userName, city, age }));
     }
-    
-    if(modeVal === "update"){
-      const formData = {userName, city, age};
-      dispatch(updateUser({formData, id}))
+
+    if (modeVal === "update") {
+      if (id == null) return;
+      dispatch(updateUser({ formData: { userName, city, age }, id }));
       dispatch(selectIdNull());
     }
+
     dispatch(clearInputData());
-  }
+  };
 
-  const handleChange = (e : React.ChangeEvent<HTMLInputElement>) : void => {
-    const field = e.target.name;
-    console.log("field", field);
-    const value : string | number = e.target.value;
-    console.log("value", value);
-    dispatch(changeFormValue({field, value}));
-  }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const field = e.target.name as keyof UserFormData;
+    const value: string | number =
+      field === "age" ? Number(e.target.value) : e.target.value;
+    dispatch(changeFormValue({ field, value }));
+  };
 
-  const handleDelete = () : void => {
-    if(!id) return;
+  const handleDelete = (): void => {
+    if (id == null) return;
     dispatch(deleteUser(id));
     dispatch(selectIdNull());
     dispatch(clearInputData());
-  }
+  };
+
 
   return (
     <div>
@@ -89,3 +99,5 @@ const UserForm = () => {
 };
 
 export default UserForm;
+
+  

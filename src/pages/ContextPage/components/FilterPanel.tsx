@@ -1,20 +1,20 @@
 import { useContext } from "react";
 import UserContext from "../store/UserContext.tsx";
-import type { User } from "../../types/User.ts";
+import type { FormData, User } from "../../../types/User.ts";
 
 const FilterPanel = () => {
 
-  const { state, dispatch } = useContext(UserContext);
+  const { state  , dispatch } = useContext(UserContext)!;
   // console.log("state inside filterPanel", state);
   console.log("re-rendering")
   const fieldData = ["userName", "city", "age"];
 
   const handleSelectField = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log("event for field", e.target.value);
-    dispatch({ type: "CHANGE_FIELD", payload: e.target.value });
+    dispatch({ type: "CHANGE_FIELD", payload: e.target.value as keyof FormData });
   };
 
-  const handleSelectValue = (e: React.ChangeEvent<HTMLOptionElement>) => {
+  const handleSelectValue = (e: React.ChangeEvent<HTMLSelectElement>) : void => {
     console.log("event for option", e.target.value);
     dispatch({type: "CHANGE_VALUE", payload: e.target.value});
   };
@@ -24,12 +24,12 @@ const FilterPanel = () => {
     const field = state.selectField as keyof User;
     if (state.selectField === "age") {
       const newUser = state.users.map((user : User) => user[field]);
-      return [...new Set(newUser)];
+      return [...new Set(newUser)] as (number)[];
     } else {
       const newUser = state.users.map((user : User) =>
         user[field].toString().toLowerCase(),
       );
-      return [...new Set(newUser)];
+      return [...new Set(newUser)] as (string)[];
     }
   };
 

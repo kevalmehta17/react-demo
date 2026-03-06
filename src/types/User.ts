@@ -11,16 +11,47 @@ export interface FormData{
     age : number
 }
 
-
-export interface UserStringOnly {
-    userName : string;
-    city : string;
-}
-
 export interface AppliedFilter {
   field: keyof FormData | null;
   uniqueVal: string;
 }
+// Context API State Type
+export interface InitialStateType {
+  users: User[];
+  formValue: {
+    userName: string;
+    city: string;
+    age : number;
+  };
+  selectedId: number | null;
+  mode: "save" | "update";
+  appliedFilter: {
+    field: string | null;
+    uniqueVal: string | number;
+  };
+  selectField: string | null;
+  selectValue: string | number | null;
+}
+
+export type UserContextType = {
+    state: InitialStateType;
+    dispatch: React.Dispatch<UserAction>;
+}
+
+export type UserAction =
+  | { type: "ADD_USER"; payload: User }
+  | { type: "UPDATE_USER"; id: number; payload: Partial<FormData> }
+  | { type: "DELETE_USER"; payload: number }
+  | { type: "CHANGE_FORM_VALUE"; field: keyof FormData; value: string | number }
+  | { type: "SELECT_ID"; payload: number }
+  | { type: "SHOW_INPUT_DATA"; payload: number }
+  | { type: "CLEAR_INPUT_DATA" }
+  | { type: "CHANGE_FIELD"; payload: keyof FormData | null }
+  | { type: "CHANGE_VALUE"; payload: string | number | null }
+  | { type: "HANDLE_FILTER_BUTTON" }
+  | { type: "HANDLE_ALL_BUTTON" }
+  | { type: "SELECT_ID_NULL" };
+
 
 
 export interface UserFormProps {
@@ -44,3 +75,22 @@ export interface UserSelectIdProps {
   setMode: React.Dispatch<React.SetStateAction<string>>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 }
+
+
+
+export type ReduxState = {
+  users: {
+    users: User[];
+    formValue: FormData;
+    selectedId: number | null;
+    mode: "save" | "update";
+  };
+  filter: {
+    selectField: string | null;
+    selectValue: string | number | null;
+    appliedFilter: {
+      field: "userName" | "city" | "age" | null;
+      uniqueVal: string | number | null;
+    };
+  };
+};

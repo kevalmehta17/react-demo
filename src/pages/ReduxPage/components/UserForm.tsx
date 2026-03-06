@@ -10,6 +10,8 @@ import {
   selectIdNull,
   updateUser,
 } from "../store/UserSlice";
+import Input from "../../../components/Input";
+import Button from "../../../components/Button";
 
 const UserForm = () => {
   const modeVal = useSelector((state: RootState) => state.users.mode);
@@ -57,7 +59,6 @@ const UserForm = () => {
     dispatch(clearInputData());
   };
 
-
   return (
     <div>
       <div>
@@ -66,30 +67,52 @@ const UserForm = () => {
       <div>
         <form onSubmit={handleSubmit}>
           <div>
-            <label>Name: </label>
+            {/* <label>Name: </label>
             <input type="text" name="userName" value={formValue.userName ?? ""}
             onChange={handleChange}
-            required />
+            required /> */}
+            <Input
+              label="Name:"
+              type="text"
+              name="userName"
+              value={formValue.userName ?? ""}
+              onChange={handleChange}
+            />
           </div>
           <div>
-            <label>City: </label>
+            {/* <label>City: </label>
             <input type="text" name="city" value={formValue.city ?? ""}
             onChange={handleChange}
-            required />
+            required /> */}
+            <Input
+              label="City:"
+              type="text"
+              name="city"
+              value={formValue.city ?? ""}
+              onChange={handleChange}
+            />
           </div>
           <div>
-            <label>Age: </label>
-            <input type="number" name="age" value={formValue.age ?? 0}
+            {/* <label>Age: </label>
+              <input type="number" name="age" value={formValue.age ?? 0}
+                onChange={handleChange}
+              required /> */}
+            <Input
+              label="Age:"
+              type="number"
+              name="age"
+              value={formValue.age ?? 0}
               onChange={handleChange}
-            required />
+            />
           </div>
           <br />
-          {modeVal === "save" && <button type="submit">Save</button>}
+          {modeVal === "save" && <Button type="submit" label="Save" />}
           {modeVal === "update" && (
-            <>
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleDelete}>Delete</button>
-            </>
+            <div style={{ display: "flex", gap: "10px" }}>
+              {/* <button type="submit">Update</button> */}
+              <Button type="submit" label="Update" />
+              <Button type="button" label="Delete" onClick={handleDelete} />
+            </div>
           )}
         </form>
         <hr />
@@ -99,5 +122,3 @@ const UserForm = () => {
 };
 
 export default UserForm;
-
-  

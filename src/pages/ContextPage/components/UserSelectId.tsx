@@ -16,12 +16,21 @@ const UserSelectId = () => {
   return (
     <div>
       <SelectDropdown
-        label="Select based on ID:"
+        label="Select ID:"
         value={selectedId ?? ""}
-        onChange={(e) => dispatch({ type: "SELECT_ID", payload: Number(e.target.value) })}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!val) {
+            dispatch({ type: "SELECT_ID_NULL" });
+            dispatch({ type: "CLEAR_INPUT_DATA" });
+            return;
+          }
+          dispatch({ type: "SELECT_ID", payload: Number(val) });
+        }}
         options={options}
         defaultOption="Select ID"
       />
+  
     </div>
   );
 };

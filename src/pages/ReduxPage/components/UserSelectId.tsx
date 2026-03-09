@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/UserStore";
-import { selectId } from "../store/UserSlice";
+import { selectId, selectIdNull, clearInputData } from "../store/UserSlice";
 import SelectDropdown from "../../../components/SelectDropdown";
 
 const UserSelectId = () => {
@@ -16,9 +16,17 @@ const UserSelectId = () => {
   return (
     <div>
       <SelectDropdown
-        label="Select based on ID:"
+        label="Select ID:"
         value={selectedId ?? ""}
-        onChange={(e) => dispatch(selectId(Number(e.target.value)))}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (!val) {
+            dispatch(selectIdNull());
+            dispatch(clearInputData());
+            return;
+          }
+          dispatch(selectId(Number(val)));
+        }}
         options={options}
         defaultOption="Select ID"
       />

@@ -19,7 +19,14 @@ const UserSelectId = ({
         label="Select ID:"
         value={selectedId ?? ""}
         onChange={(e) => {
-          const id = Number(e.target.value);
+          const val = e.target.value;
+          if (!val) {
+            setSelectedId(null);
+            setMode("save");
+            setFormData({ userName: "", city: "", age: 0 });
+            return;
+          }
+          const id = Number(val);
           setSelectedId(id);
           setMode("update");
           const user = users.find((u) => u.id === id);
@@ -28,7 +35,7 @@ const UserSelectId = ({
           }
         }}
         options={options}
-        defaultOption=" Select ID "
+        defaultOption="Select ID"
       />
     </div>
   );

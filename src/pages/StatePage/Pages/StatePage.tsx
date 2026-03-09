@@ -1,57 +1,17 @@
 import { useState } from "react";
-import type { FormData, User } from "../../types/User.ts";
-import UserForm from "../components/UserForm.tsx";
-
-import FilterPanel from "../components/FilterPanel.tsx";
-import UserTable from "../components/UserTable.tsx";
-import UserSelectId from "../components/UserSelectId.tsx";
+import type { User, FormData, AppliedFilter } from "../../../types/User";
+import UserForm from "../components/UserForm";
+import UserSelectId from "../components/UserSelectId";
+import FilterPanel from "../components/FilterPanel";
+import UserTableList from "../components/UserTable";
 
 const StatePage = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [selectField, setSelectField] = useState<keyof FormData | null>(null);
-  const [selectValue, setSelectValue] = useState<string | number>("");
+  const [formData, setFormData] = useState<FormData>({ userName: "", city: "", age: 0 });
   const [mode, setMode] = useState<string>("save");
-  const [formData, setFormData] = useState<FormData>({
-    userName: "",
-    city: "",
-    age: 0,
-  });
-
-  const [appliedFilter, setAppliedFilter] = useState<{
-    field: keyof FormData | null;
-    uniqueVal: string;
-  }>({
-    field: null,
-    uniqueVal: "",
-  });
-
-  const displayUsers = (): User[] => {
-    return appliedFilter.field && appliedFilter.uniqueVal
-      ? users.filter((user) => {
-          if (appliedFilter.field === "age") {
-            return user.age === Number(appliedFilter.uniqueVal);
-          } else {
-            return (
-              user[appliedFilter.field as keyof User]
-                .toString()
-                .toLowerCase() === appliedFilter.uniqueVal
-            );
-          }
-        })
-      : users;
-  };
-
-  const getFilterUnique = (): (string | number)[] => {
-    if (!selectField) return [];
-    if (selectField === "age") {
-      const newUser = users.map((user) => user[selectField]);
-      return [...new Set(newUser)];
-    } else {
-      const newUser = users.map((user) => user[selectField].toLowerCase());
-      return [...new Set(newUser)];
-    }
-  };
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [appliedFilter, setAppliedFilter] = useState<AppliedFilter>({ field: null, uniqueVal: "" });
+  const [selectValue, setSelectValue] = useState<string | number>("");
 
   return (
     <div>
@@ -76,14 +36,11 @@ const StatePage = () => {
         setFormData={setFormData}
       />
       <FilterPanel
-        selectField={selectField}
-        selectValue={selectValue}
-        setSelectField={setSelectField}
-        setSelectValue={setSelectValue}
+        users={users}
+        appliedFilter={appliedFilter}
         setAppliedFilter={setAppliedFilter}
-        getFilterUnique={getFilterUnique}
       />
-      <UserTable displayUsers={displayUsers} />
+      <UserTableList users={users} appliedFilter={appliedFilter} />
     </div>
   );
 };

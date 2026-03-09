@@ -1,15 +1,5 @@
-import type { ChangeEvent, FormEvent } from "react";
-import type { FormData, User } from "../types/User";
-
-interface SubmitParams {
-  e: FormEvent<HTMLFormElement>;
-  mode: "save" | "update";
-  selectedId: number | null;
-  onAdd: (user: User) => void;
-  onUpdate: (id: number, formData: FormData) => void;
-  onClear: () => void;
-  onDeselectId: () => void;
-}
+import type { ChangeEvent } from "react";
+import type { FormData, SubmitParams, DeleteParams } from "../types/User";
 
 export const handleFormSubmit = ({
   e,
@@ -55,12 +45,6 @@ export const handleFormChange = (
   onChangeField(field, value);
 };
 
-interface DeleteParams {
-  selectedId: number | null;
-  onDelete: (id: number) => void;
-  onClear: () => void;
-  onDeselectId: () => void;
-}
 
 export const handleFormDelete = ({
   selectedId,

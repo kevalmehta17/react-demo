@@ -9,7 +9,7 @@ const UserTable = ({ users }: UserTableProps) => {
     <div>
         <h2>Table</h2>
       {
-        <table border={1} cellPadding={8}>
+        <table border={1}>
           <thead>
             <tr>
               <th>Name</th>

@@ -1,33 +1,23 @@
-import type { User } from "../../types/User";
+import type { User, AppliedFilter } from "../../../types/User";
+import UserTable from "../../../components/UserTable";
+import { getFilteredUsers } from "../../../utils/getFilterUnique";
 
-interface UserTableProps {
-  displayUsers: () => User[];
+interface UserTableListProps {
+  users: User[];
+  appliedFilter: AppliedFilter;
 }
 
-const UserTable = ({ displayUsers }: UserTableProps) => {
+const UserTableList = ({ users, appliedFilter }: UserTableListProps) => {
+  const filteredUsers = getFilteredUsers(users, {
+    field: appliedFilter.field,
+    uniqueVal: appliedFilter.uniqueVal,
+  });
+
   return (
     <div>
-       <h2>Table</h2>
-        <table border={1}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>City</th>
-              <th>Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayUsers().map((user) => (
-                <tr key={user.id}>
-                  <td>{user.userName}</td>
-                  <td>{user.city}</td>
-                  <td>{user.age}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+      <UserTable users={filteredUsers} />
     </div>
-  )
-}
+  );
+};
 
-export default UserTable
+export default UserTableList;

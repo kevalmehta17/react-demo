@@ -95,7 +95,7 @@ export type ReduxState = {
   };
 };
 
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 
 export interface SelectDropdownProps {
   label: string;
@@ -103,4 +103,21 @@ export interface SelectDropdownProps {
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   options: { label: string; value: string | number }[];
   defaultOption?: string;
+}
+
+export interface SubmitParams {
+  e: FormEvent<HTMLFormElement>;
+  mode: "save" | "update";
+  selectedId: number | null;
+  onAdd: (user: User) => void;
+  onUpdate: (id: number, formData: FormData) => void;
+  onClear: () => void;
+  onDeselectId: () => void;
+}
+
+export interface DeleteParams {
+  selectedId: number | null;
+  onDelete: (id: number) => void;
+  onClear: () => void;
+  onDeselectId: () => void;
 }

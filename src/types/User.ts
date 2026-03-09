@@ -1,14 +1,16 @@
+import type { ChangeEvent, FormEvent } from "react";
+
 export interface User {
-    id: number;
-    userName : string;
-    city : string;
-    age : number
+  id: number;
+  userName: string;
+  city: string;
+  age: number;
 }
 
-export interface FormData{
-    userName : string;
-    city : string;
-    age : number
+export interface FormData {
+  userName: string;
+  city: string;
+  age: number;
 }
 
 export interface AppliedFilter {
@@ -21,7 +23,7 @@ export interface InitialStateType {
   formValue: {
     userName: string;
     city: string;
-    age : number;
+    age: number;
   };
   selectedId: number | null;
   mode: "save" | "update";
@@ -34,9 +36,9 @@ export interface InitialStateType {
 }
 
 export type UserContextType = {
-    state: InitialStateType;
-    dispatch: React.Dispatch<UserAction>;
-}
+  state: InitialStateType;
+  dispatch: React.Dispatch<UserAction>;
+};
 
 export type UserAction =
   | { type: "ADD_USER"; payload: User }
@@ -50,9 +52,23 @@ export type UserAction =
   | { type: "CHANGE_VALUE"; payload: string | number | null }
   | { type: "HANDLE_FILTER_BUTTON" }
   | { type: "HANDLE_ALL_BUTTON" }
-  | { type: "SELECT_ID_NULL" };
+  | { type: "SELECT_ID_NULL" }; 
 
-  export interface FilterState {
+// interface InputProps {
+//   label: string;
+//   type: string;
+//   name: string;
+//   value: string | number;
+//   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+//   required?: boolean;
+// }
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
+
+
+export interface FilterState {
   selectField: string | null;
   selectValue: string | number | null;
   appliedFilter: {
@@ -67,8 +83,6 @@ export interface UserState {
   selectedId: number | null;
   mode: "save" | "update";
 }
-
-
 
 export interface UserFormProps {
   users: User[];
@@ -92,8 +106,6 @@ export interface UserSelectIdProps {
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 }
 
-
-
 export type ReduxState = {
   users: {
     users: User[];
@@ -111,7 +123,6 @@ export type ReduxState = {
   };
 };
 
-import type { ChangeEvent, FormEvent } from "react";
 
 export interface SelectDropdownProps {
   label: string;

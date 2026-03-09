@@ -1,24 +1,12 @@
-import type { ChangeEvent } from "react";
+import type { InputProps } from "../types/User";
 
-interface InputProps {
-  label: string;
-  type: string;
-  name: string;
-  value: string | number;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
-}
-
-const Input = ({ label, type, name, value, onChange, required = true }: InputProps) => {
+const Input = ({ label, required = true, ...rest }: InputProps) => {
   return (
     <div>
       <label>{label} </label>
       <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
         required={required}
+        {...rest}
       />
     </div>
   );

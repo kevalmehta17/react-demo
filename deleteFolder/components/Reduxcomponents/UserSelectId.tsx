@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store/UserStore";
-import { selectId, selectIdNull, clearInputData } from "../store/UserSlice";
-import SelectDropdown from "../../../components/SelectDropdown";
+import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
+import { selectId, selectIdNull, clearInputData } from "../../../src/pages/ReduxPage/store/UserSlice";
+import SelectDropdown from "../../../src/components/SelectDropdown";
 
 const UserSelectId = () => {
   const users = useSelector((state: RootState) => state.users.users);

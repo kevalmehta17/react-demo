@@ -33,10 +33,15 @@ export const FilterSlice = createSlice({
       state.appliedFilter.field = "";
       state.appliedFilter.uniqueVal = "";
     },
+    resetFilterValue: (state) => {
+      state.selectValue = null;
+      state.appliedFilter = { field: null, uniqueVal: "" };
+      // selectField stays unchanged!
+    },
   },
 });
 
-export const { changeField, changeValue, handleFilterButton, handleAllButton } =
+export const { changeField, changeValue, handleFilterButton,resetFilterValue, handleAllButton } =
   FilterSlice.actions;
 
 export default FilterSlice.reducer;

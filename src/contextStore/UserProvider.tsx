@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import type { InitialStateType, UserAction } from "../../../types/User";
+import type { InitialStateType, User, UserAction } from "../types/User";
 import { UserContext } from "./UserContext";
 
 const initialState: InitialStateType = {
@@ -24,13 +24,34 @@ function reducer(state: InitialStateType, action: UserAction): InitialStateType 
       return { ...state, users: updatedUsers, mode: "save" };
     }
 
-    case "DELETE_USER":
-      return {
-        ...state,
-        users: state.users.filter((u) => u.id !== action.payload),
-        mode: "save",
-      };
+    // ...existing code...
 
+case "DELETE_USER": {
+  const deletedId = action.payload;
+  const remaining = state.users.filter((u) => u.id !== deletedId);
+
+  // check if filter value still valid
+  const stillHasMatch = state.appliedFilter.field
+    ? remaining.some(
+        (u) =>
+          String(u[state.appliedFilter.field as keyof User]) ===
+          state.appliedFilter.uniqueVal
+      )
+    : true;
+
+  return {
+    ...state,
+    users: remaining,
+    formValue: { userName: "", city: "", age: 0 },
+    mode: "save",
+    selectedId: null,
+    // keep selectField, reset selectValue if no match
+    selectValue: stillHasMatch ? state.selectValue : null,
+    appliedFilter: stillHasMatch
+      ? state.appliedFilter
+      : { field: null, uniqueVal: "" },
+  };
+}
     case "CHANGE_FORM_VALUE": {
       const { field, value } = action;
       return {

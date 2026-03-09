@@ -1,5 +1,5 @@
-import type { UserSelectIdProps } from "../../../types/User";
-import SelectDropdown from "../../../components/SelectDropdown";
+import type { UserSelectIdProps } from "../../../src/types/User";
+import SelectDropdown from "../../../src/components/SelectDropdown";
 
 const UserSelectId = ({
   users,

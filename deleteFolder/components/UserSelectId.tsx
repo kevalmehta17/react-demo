@@ -1,6 +1,7 @@
 import { useContext } from "react";
-import { UserContext } from "../store/UserContext";
-import SelectDropdown from "../../../components/SelectDropdown";
+import { UserContext } from "../../src/contextStore/UserContext"
+import SelectDropdown from "../../src/components/SelectDropdown";
+import type { User } from "../../src/types/User";
 
 const UserSelectId = () => {
   const context = useContext(UserContext);
@@ -8,7 +9,7 @@ const UserSelectId = () => {
   const { state, dispatch } = context;
   const { users, selectedId } = state;
 
-  const options = users.map((user) => ({
+  const options = users.map((user : User) => ({
     label: String(user.id),
     value: user.id,
   }));

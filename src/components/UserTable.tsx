@@ -1,33 +1,40 @@
 import type { User } from "../types/User";
 
-interface UserTableProps {
-  users: User[];
+interface Column<T> {
+  label: string;
+  key: keyof T;
+  render?: (item: T) => React.ReactNode;
 }
 
-const UserTable = ({ users }: UserTableProps) => {
+interface UserTableProps {
+  users: User[];
+  columns: Column<User>[];
+}
+
+const UserTable = ({ users, columns }: UserTableProps) => {
   return (
     <div>
-        <h2>Table</h2>
-      {
-        <table border={1}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>City</th>
-              <th>Age</th>
-            </tr>           
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.userName}</td>
-                <td>{user.city}</td>
-                <td>{user.age}</td>
-              </tr>
+      <h2>Table</h2>
+      <table border={1}>
+        <thead>
+          <tr>
+            {columns.map((col) => (
+              <th key={String(col.key)}>{col.label}</th>
             ))}
-          </tbody>
-        </table>
-      }
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.id}>
+              {columns.map((col) => (
+                <td key={String(col.key)}>
+                  {col.render ? col.render(user) : String(user[col.key] ?? "")}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -1,14 +1,11 @@
-interface ButtonProps {
-  type?: "button" | "submit" | "reset";
-  label: string;
-  onClick?: () => void;
-  disabled?: boolean;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+label?: string;
 }
 
-const Button = ({ type = "button", label, onClick, disabled = false }: ButtonProps) => {
+const Button = ({ label, children, ...rest}: ButtonProps) => {
   return (
-    <button type={type} onClick={onClick} disabled={disabled}>
-      {label}
+    <button {...rest}>
+      {label || children}
     </button>
   );
 };

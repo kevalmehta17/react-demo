@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { User, AppliedFilter } from "../../../types/User";
-import SelectDropdown from "../../../components/SelectDropdown";
-import Button from "../../../components/Button";
-import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../utils/getFilterUnique";
+import type { User, AppliedFilter } from "../../../src/types/User";
+import SelectDropdown from "../../../src/components/SelectDropdown";
+import Button from "../../../src/components/Button";
+import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../src/utils/userFormHandlers";
 
 interface FilterPanelProps {
   users: User[];
@@ -10,7 +10,7 @@ interface FilterPanelProps {
   setAppliedFilter: React.Dispatch<React.SetStateAction<AppliedFilter>>;
 }
 
-const FilterPanel = ({ users, appliedFilter, setAppliedFilter }: FilterPanelProps) => {
+const FilterPanel = ({ users, setAppliedFilter }: FilterPanelProps) => {
   const [selectField, setSelectField] = useState<string | null>(null);
   const [selectValue, setSelectValue] = useState<string | number | null>(null);
 

@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store/UserStore";
+import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
 import {
   changeField,
   changeValue,
   handleFilterButton,
   handleAllButton,
-} from "../store/FilterSlice";
-import SelectDropdown from "../../../components/SelectDropdown";
-import Button from "../../../components/Button";
-import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../utils/getFilterUnique";
+} from "../../../src/pages/ReduxPage/store/FilterSlice";
+import SelectDropdown from "../../../src/components/SelectDropdown";
+import Button from "../../../src/components/Button";
+import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../src/utils/userFormHandlers";
 
 const FilterPanel = () => {
   const users = useSelector((state: RootState) => state.users.users);

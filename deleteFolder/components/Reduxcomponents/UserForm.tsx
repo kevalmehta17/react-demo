@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 // import type { FormData as UserFormData } from "../../../types/User";
-import type { RootState } from "../store/UserStore";
+import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
 import {
   addUser,
   changeFormValue,
@@ -8,10 +8,10 @@ import {
   deleteUser,
   selectIdNull,
   updateUser,
-} from "../store/UserSlice";
-import Input from "../../../components/Input";
-import Button from "../../../components/Button";
-import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../utils/userFormHandlers";
+} from "../../../src/pages/ReduxPage/store/UserSlice";
+import Input from "../../../src/components/Input";
+import Button from "../../../src/components/Button";
+import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../src/utils/userFormHandlers";
 
 const UserForm = () => {
   const modeVal = useSelector((state: RootState) => state.users.mode);

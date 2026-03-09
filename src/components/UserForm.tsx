@@ -1,0 +1,97 @@
+import type { FormData, SubmitParams, DeleteParams } from "../types/User";
+import Input from "./Input";
+import Button from "./Button";
+import { handleFormSubmit, handleFormChange, handleFormDelete } from "../utils/userFormHandlers";
+
+interface UserFormProps {
+  title: string;
+  formValue: FormData;
+  mode: "save" | "update";
+  selectedId: number | null;
+  onChangeField: (field: keyof FormData, value: string | number) => void;
+  onAdd: SubmitParams["onAdd"];
+  onUpdate: SubmitParams["onUpdate"];
+  onClear: SubmitParams["onClear"];
+  onDeselectId: SubmitParams["onDeselectId"];
+  onDelete: DeleteParams["onDelete"];
+}
+
+const UserForm = ({
+  title,
+  formValue,
+  mode,
+  selectedId,
+  onChangeField,
+  onAdd,
+  onUpdate,
+  onClear,
+  onDeselectId,
+  onDelete,
+}: UserFormProps) => {
+  return (
+    <div>
+      <div>
+        <h1>{title}</h1>
+      </div>
+      <div>
+        <form
+          onSubmit={(e) =>
+            handleFormSubmit({
+              e,
+              mode,
+              selectedId,
+              onAdd,
+              onUpdate,
+              onClear,
+              onDeselectId,
+            })
+          }
+        >
+          <Input
+            label="Name:"
+            type="text"
+            name="userName"
+            value={formValue.userName ?? ""}
+            onChange={(e) => handleFormChange(e, onChangeField)}
+          />
+          <Input
+            label="City:"
+            type="text"
+            name="city"
+            value={formValue.city ?? ""}
+            onChange={(e) => handleFormChange(e, onChangeField)}
+          />
+          <Input
+            label="Age:"
+            type="number"
+            name="age"
+            value={formValue.age ?? 0}
+            onChange={(e) => handleFormChange(e, onChangeField)}
+          />
+          <br />
+          {mode === "save" && <Button type="submit" label="Save" />}
+          {mode === "update" && (
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Button type="submit" label="Update" />
+              <Button
+                type="button"
+                label="Delete"
+                onClick={() =>
+                  handleFormDelete({
+                    selectedId,
+                    onDelete,
+                    onClear,
+                    onDeselectId,
+                  })
+                }
+              />
+            </div>
+          )}
+        </form>
+        <hr />
+      </div>
+    </div>
+  );
+};
+
+export default UserForm;

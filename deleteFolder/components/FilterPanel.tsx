@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import type { User } from "../../../types/User";
-import { UserContext } from "../store/UserContext";
-import SelectDropdown from "../../../components/SelectDropdown";
-import Button from "../../../components/Button";
-import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../utils/getFilterUnique";
+import type { User } from "../../src/types/User";
+import { UserContext } from "../../src/contextStore/UserContext"
+import SelectDropdown from "../../src/components/SelectDropdown";
+import Button from "../../src/components/Button";
+import { getFieldOptions, getValueOptions, parseFilterValue } from "../../src/utils/userFormHandlers";
 
 const FilterPanel = () => {
   const context = useContext(UserContext);

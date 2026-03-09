@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { UserContext } from "../store/UserContext";
-import Input from "../../../components/Input";
-import Button from "../../../components/Button";
-import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../utils/userFormHandlers";
+import { UserContext } from "../../src/contextStore/UserContext"
+import Input from "../../src/components/Input";
+import Button from "../../src/components/Button";
+import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../src/utils/userFormHandlers";
 
 const UserForm = () => {
   const context = useContext(UserContext);

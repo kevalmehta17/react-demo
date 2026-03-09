@@ -1,6 +1,8 @@
-import type { User, AppliedFilter } from "../../../types/User";
-import UserTable from "../../../components/UserTable";
-import { getFilteredUsers } from "../../../utils/getFilterUnique";
+
+import type { User, AppliedFilter } from "../../../src/types/User";
+import UserTable from "../../../src/components/UserTable";
+import { getFilteredUsers } from "../../../src/utils/userFormHandlers";
+import { userColumns } from "../../../src/constants/userColumns";
 
 interface UserTableListProps {
   users: User[];
@@ -15,9 +17,11 @@ const UserTableList = ({ users, appliedFilter }: UserTableListProps) => {
 
   return (
     <div>
-      <UserTable users={filteredUsers} />
+      <UserTable users={filteredUsers} columns={userColumns} />
     </div>
   );
 };
 
 export default UserTableList;
+
+

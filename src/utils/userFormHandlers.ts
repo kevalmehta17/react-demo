@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import type { FormData, SubmitParams, DeleteParams } from "../types/User";
+import type { User } from "../types/User";
 
 export const handleFormSubmit = ({
   e,
@@ -23,7 +24,7 @@ export const handleFormSubmit = ({
   }
 
   if (mode === "save") {
-    onAdd({ id: Date.now(), userName, city, age });
+    onAdd({ id: +new Date(), userName, city, age });
   }
 
   if (mode === "update") {
@@ -56,4 +57,80 @@ export const handleFormDelete = ({
   onDelete(selectedId);
   onDeselectId();
   onClear();
+};
+
+
+// FOR THE UNIQUE
+
+export const getFilterUnique = (
+  users: User[],
+  selectField: string | null
+): (string | number)[] => {
+  if (!selectField) return [];
+  const field = selectField as keyof User;
+
+  if (selectField === "age") {
+    const values = users.map((user) => user[field] as number);
+    return [...new Set(values)];
+  } else {
+    const values = users.map((user) => String(user[field]).toLowerCase());
+    return [...new Set(values)];
+  }
+};
+
+export const getFilteredUsers = (
+  users: User[],
+  appliedFilter: { field: string | null; uniqueVal: string | number }
+): User[] => {
+  if (!appliedFilter.field || appliedFilter.uniqueVal === "") return users;
+
+  return users.filter(
+    (user) =>
+      String(user[appliedFilter.field as keyof User]).toLowerCase() ===
+      String(appliedFilter.uniqueVal).toLowerCase()
+  );
+};
+
+export const getFieldOptions = (): { label: string; value: string }[] => {
+  const fields: (keyof Omit<User, "id">)[] = ["userName", "city", "age"];
+  return fields.map((f) => ({ label: f, value: f }));
+};
+
+export const getValueOptions = (
+  users: User[],
+  selectField: string | null
+): { label: string; value: string | number }[] => {
+  const uniqueValues = getFilterUnique(users, selectField);
+  return uniqueValues.map((v) => ({ label: String(v), value: v }));
+};
+
+export const parseFilterValue = (
+  val: string,
+  selectField: string | null
+): string | number | null => {
+  if (!val) return null;
+  if (selectField === "age") return Number(val);
+  return val;
+};
+
+export const shouldResetFilterAfterDelete = (
+  users: User[],
+  deletedId: number,
+  appliedFilter: AppliedFilter,
+  selectField: string | null
+): { resetValue: boolean } => {
+  // remaining users after deletion
+  const remaining = users.filter((u) => u.id !== deletedId);
+
+  // if no filter is applied, no need to reset
+  if (!appliedFilter.field || !appliedFilter.uniqueVal) {
+    return { resetValue: false };
+  }
+
+  // check if any remaining user still matches the applied filter
+  const stillHasMatch = remaining.some(
+    (u) => String(u[appliedFilter.field as keyof User]) === appliedFilter.uniqueVal
+  );
+
+  return { resetValue: !stillHasMatch };
 };

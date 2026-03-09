@@ -1,13 +1,14 @@
-
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { User, FormData, UserState } from "../../../types/User";
-
 
 const initialState: UserState = {
   users: [],
   formValue: { userName: "", city: "", age: 0 },
   selectedId: null,
   mode: "save",
+  appliedFilter: { field: null, uniqueVal: "" },
+  selectValue: null,
+  selectField: null,
 };
 
 export const UserSlice = createSlice({
@@ -19,7 +20,7 @@ export const UserSlice = createSlice({
     },
     updateUser: (
       state,
-      action: PayloadAction<{ formData: FormData; id: number }>
+      action: PayloadAction<{ formData: FormData; id: number }>,
     ) => {
       const { formData, id } = action.payload;
       const index = state.users.findIndex((u) => u.id === id);
@@ -30,11 +31,14 @@ export const UserSlice = createSlice({
     },
     deleteUser: (state, action: PayloadAction<number>) => {
       state.users = state.users.filter((u) => u.id !== action.payload);
+      state.formValue = { userName: "", city: "", age: 0 };
       state.mode = "save";
+      state.selectedId = null;
     },
+
     changeFormValue: (
       state,
-      action: PayloadAction<{ field: keyof FormData; value: string | number }>
+      action: PayloadAction<{ field: keyof FormData; value: string | number }>,
     ) => {
       const { field, value } = action.payload;
       if (field === "age") {
@@ -48,7 +52,11 @@ export const UserSlice = createSlice({
       state.mode = "update";
       const user = state.users.find((u) => u.id === action.payload);
       if (user) {
-        state.formValue = { userName: user.userName, city: user.city, age: user.age };
+        state.formValue = {
+          userName: user.userName,
+          city: user.city,
+          age: user.age,
+        };
       }
     },
     selectIdNull: (state) => {

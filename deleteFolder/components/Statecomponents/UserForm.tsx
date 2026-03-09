@@ -1,11 +1,11 @@
 
-import type { UserFormProps, FormData as UserFormData } from "../../../types/User";
-import Input from "../../../components/Input";
-import Button from "../../../components/Button";
-import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../utils/userFormHandlers";
+import type { UserFormProps } from "../../../src/types/User";
+import Input from "../../../src/components/Input";
+import Button from "../../../src/components/Button";
+import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../src/utils/userFormHandlers";
 
 const UserForm = ({
-  users,
+
   setUsers,
   formData,
   setFormData,
@@ -13,7 +13,6 @@ const UserForm = ({
   setMode,
   selectedId,
   setSelectedId,
-  appliedFilter,
   setAppliedFilter,
   setSelectValue,
 }: UserFormProps) => {

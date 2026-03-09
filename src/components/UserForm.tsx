@@ -1,7 +1,8 @@
-import type { FormData, SubmitParams, DeleteParams } from "../types/User";
+import type { FormEvent } from "react";
+import type { FormData } from "../types/User";
 import Input from "./Input";
 import Button from "./Button";
-import { handleFormSubmit, handleFormChange, handleFormDelete } from "../utils/userFormHandlers";
+import { handleFormChange } from "../utils/userFormHandlers";
 
 interface UserFormProps {
   title: string;
@@ -9,11 +10,8 @@ interface UserFormProps {
   mode: "save" | "update";
   selectedId: number | null;
   onChangeField: (field: keyof FormData, value: string | number) => void;
-  onAdd: SubmitParams["onAdd"];
-  onUpdate: SubmitParams["onUpdate"];
-  onClear: SubmitParams["onClear"];
-  onDeselectId: SubmitParams["onDeselectId"];
-  onDelete: DeleteParams["onDelete"];
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onDelete: (id: number) => void;
 }
 
 const UserForm = ({
@@ -22,10 +20,7 @@ const UserForm = ({
   mode,
   selectedId,
   onChangeField,
-  onAdd,
-  onUpdate,
-  onClear,
-  onDeselectId,
+  onSubmit,
   onDelete,
 }: UserFormProps) => {
   return (
@@ -34,19 +29,7 @@ const UserForm = ({
         <h1>{title}</h1>
       </div>
       <div>
-        <form
-          onSubmit={(e) =>
-            handleFormSubmit({
-              e,
-              mode,
-              selectedId,
-              onAdd,
-              onUpdate,
-              onClear,
-              onDeselectId,
-            })
-          }
-        >
+        <form onSubmit={onSubmit}>
           <Input
             label="Name:"
             type="text"
@@ -76,14 +59,9 @@ const UserForm = ({
               <Button
                 type="button"
                 label="Delete"
-                onClick={() =>
-                  handleFormDelete({
-                    selectedId,
-                    onDelete,
-                    onClear,
-                    onDeselectId,
-                  })
-                }
+                onClick={() => {
+                  if (selectedId !== null) onDelete(selectedId);
+                }}
               />
             </div>
           )}

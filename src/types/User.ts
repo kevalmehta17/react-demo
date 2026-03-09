@@ -77,12 +77,22 @@ export interface FilterState {
   };
 }
 
-export interface UserState {
+// ...existing code...
+
+export type UserState = {
   users: User[];
   formValue: FormData;
   selectedId: number | null;
   mode: "save" | "update";
-}
+
+  appliedFilter: {
+    field: keyof FormData | null;
+    uniqueVal: string;
+  };
+  selectValue: string | null;
+  selectField: keyof FormData | null;
+};
+
 
 export interface UserFormProps {
   users: User[];

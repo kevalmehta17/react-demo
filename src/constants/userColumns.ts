@@ -7,7 +7,7 @@ interface Column<T> {
 }
 
 export const userColumns: Column<User>[] = [
-  { label: "Name", key: "userName" },
+  { label: "Name", key: "userName", },
   { label: "City", key: "city" },
   { label: "Age", key: "age" },
 ];

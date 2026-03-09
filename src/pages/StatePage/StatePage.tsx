@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import type { User, FormData, AppliedFilter } from "../../types/User";
 import UserForm from "../../components/UserForm";
 import FilterPanel from "../../components/FilterPanel";
@@ -21,6 +21,71 @@ const StatePage = () => {
 
   const filteredUsers = getFilteredUsers(users, appliedFilter);
 
+  const resetFormState = () => {
+    setFormData(initialFormData);
+    setSelectedId(null);
+    setMode("save");
+  };
+
+  const handleChangeField = (field: keyof FormData, value: string | number) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  if (!formData.userName || !formData.city || formData.age <= 0) {
+    alert("Fill Every Field");
+    return;
+  }
+
+  if (mode === "save") {
+    const newUser: User = {
+      id: Date.now(),
+      ...formData
+    };
+
+    setUsers(prev => [...prev, newUser]);
+  }
+
+  if (mode === "update" && selectedId !== null) {
+    setUsers(prev =>
+      prev.map(user =>
+        user.id === selectedId
+          ? { ...user, ...formData }
+          : user
+      )
+    );
+
+    setSelectedId(null);
+  }
+
+  setFormData(initialFormData);
+  setMode("save");
+};
+
+
+  const handleDelete = () => {
+  if (selectedId === null) return;
+
+  const { resetValue } = shouldResetFilterAfterDelete(
+    users,
+    selectedId,
+    appliedFilter
+  );
+
+  setUsers(prev => prev.filter(u => u.id !== selectedId));
+
+  if (resetValue) {
+    setSelectValue(null);
+    setAppliedFilter(initialFilter);
+  }
+
+  setSelectedId(null);
+  setFormData(initialFormData);
+  setMode("save");
+};
+
   return (
     <div>
       <UserForm
@@ -28,41 +93,11 @@ const StatePage = () => {
         formValue={formData}
         mode={mode}
         selectedId={selectedId}
-        onChangeField={(field, value) =>
-          setFormData((prev) => ({ ...prev, [field]: value }))
-        }
-        onAdd={(user) => setUsers((prev) => [...prev, user])}
-        onUpdate={(id, updatedData) =>
-          setUsers((prev) =>
-            prev.map((u) => (u.id === id ? { ...u, ...updatedData } : u))
-          )
-        }
-        onClear={() => {
-          setFormData(initialFormData);
-          setMode("save");
-        }}
-        onDeselectId={() => setSelectedId(null)}
-        onDelete={(id) => {
-          const { resetValue } = shouldResetFilterAfterDelete(
-            users,
-            id,
-            appliedFilter,
-            selectField
-          );
-
-          // delete the user
-          setUsers((prev) => prev.filter((u) => u.id !== id));
-
-          // if no more users match the filter, reset value but keep field
-          if (resetValue) {
-            setSelectValue(null);
-            setAppliedFilter({
-              field: null,
-              uniqueVal: "",
-            });
-          }
-        }}
+        onChangeField={handleChangeField}
+        onSubmit={handleSubmit}
+        onDelete={handleDelete}
       />
+
       <UserSelectId
         users={users}
         selectedId={selectedId}
@@ -78,6 +113,7 @@ const StatePage = () => {
         }}
         onClear={() => setFormData(initialFormData)}
       />
+
       <FilterPanel
         users={users}
         selectField={selectField}
@@ -101,6 +137,7 @@ const StatePage = () => {
           setAppliedFilter(initialFilter);
         }}
       />
+
       <UserTable users={filteredUsers} columns={userColumns} />
     </div>
   );

@@ -32,7 +32,6 @@ export const handleFormSubmit = ({
     onUpdate(selectedId, { userName, city, age });
     onDeselectId();
   }
-
   onClear();
 };
 
@@ -117,7 +116,6 @@ export const shouldResetFilterAfterDelete = (
   users: User[],
   deletedId: number,
   appliedFilter: AppliedFilter,
-  selectField: string | null
 ): { resetValue: boolean } => {
   // remaining users after deletion
   const remaining = users.filter((u) => u.id !== deletedId);

@@ -1,67 +1,68 @@
-import { createSlice, current } from "@reduxjs/toolkit";
-import type { User, FormData } from "../../../types/User.ts";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
-  users: [] as User[],
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { User, FormData } from "../../../types/User";
+
+interface UserState {
+  users: User[];
+  formValue: FormData;
+  selectedId: number | null;
+  mode: "save" | "update";
+}
+
+const initialState: UserState = {
+  users: [],
   formValue: { userName: "", city: "", age: 0 },
+  selectedId: null,
   mode: "save",
-  selectedId: null as number | null,
 };
 
 export const UserSlice = createSlice({
-  name: "user",
+  name: "users",
   initialState,
   reducers: {
     addUser: (state, action: PayloadAction<User>) => {
       state.users.push(action.payload);
-      console.log("after add user", current(state.users));
     },
     updateUser: (
       state,
-      action: PayloadAction<{ formData: FormData; id: number }>,
+      action: PayloadAction<{ formData: FormData; id: number }>
     ) => {
       const { formData, id } = action.payload;
-      // const findUser = state.users.find((user) => user.id === id);
-      state.users = state.users.map((user) =>
-        user.id === id ? { ...user, ...formData } : user,
-      );
-      console.log("after update user", state.users);
+      const index = state.users.findIndex((u) => u.id === id);
+      if (index !== -1) {
+        state.users[index] = { ...state.users[index], ...formData };
+      }
       state.mode = "save";
     },
     deleteUser: (state, action: PayloadAction<number>) => {
-      const id = action.payload;
-      state.users = state.users.filter((user) => user.id !== id);
-      console.log("after delete user", state.users);
+      state.users = state.users.filter((u) => u.id !== action.payload);
+      state.mode = "save";
     },
-    changeFormValue: (state, action: PayloadAction<{ field: keyof FormData; value: string | number }>) => {
-      state.formValue[action.payload.field] = action.payload.value as never;
-      console.log("field value", current(state.formValue));
+    changeFormValue: (
+      state,
+      action: PayloadAction<{ field: keyof FormData; value: string | number }>
+    ) => {
+      const { field, value } = action.payload;
+      if (field === "age") {
+        state.formValue[field] = Number(value);
+      } else {
+        state.formValue[field] = value as string;
+      }
     },
     selectId: (state, action: PayloadAction<number>) => {
       state.selectedId = action.payload;
       state.mode = "update";
-      // console.log("after selectedId", state)
+      const user = state.users.find((u) => u.id === action.payload);
+      if (user) {
+        state.formValue = { userName: user.userName, city: user.city, age: user.age };
+      }
     },
-    showInputData: (state) => {
-      const findUser = state.users.find((user) => user.id === state.selectedId);
-      if (!findUser) return;
-      state.formValue = {
-        userName: findUser.userName,
-        city: findUser.city,
-        age: findUser.age,
-      };
-      console.log("after showInputData", state.formValue);
-    },
-
-    clearInputData: (state) => {
-      state.formValue = { userName: "", city: "", age: 0 };
-      console.log("clear", current(state));
-    },
-
     selectIdNull: (state) => {
       state.selectedId = null;
       state.mode = "save";
+    },
+    clearInputData: (state) => {
+      state.formValue = { userName: "", city: "", age: 0 };
     },
   },
 });
@@ -72,9 +73,8 @@ export const {
   deleteUser,
   changeFormValue,
   selectId,
-  showInputData,
-  clearInputData,
   selectIdNull,
+  clearInputData,
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

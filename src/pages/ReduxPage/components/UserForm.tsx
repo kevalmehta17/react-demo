@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { ChangeEvent, FormEvent } from "react";
-import type { FormData as UserFormData } from "../../../types/User";
+// import type { FormData as UserFormData } from "../../../types/User";
 import type { RootState } from "../store/UserStore";
 import {
   addUser,
@@ -12,6 +11,7 @@ import {
 } from "../store/UserSlice";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
+import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../utils/userFormHandlers";
 
 const UserForm = () => {
   const modeVal = useSelector((state: RootState) => state.users.mode);
@@ -19,99 +19,45 @@ const UserForm = () => {
   const id = useSelector((state: RootState) => state.users.selectedId);
   const dispatch = useDispatch();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-
-    const userName = (data.get("userName") as string).trim();
-    const city = (data.get("city") as string).trim();
-    const age = Number(data.get("age"));
-
-    if (!userName || !city || age <= 0) {
-      alert("Fill Every Field");
-      return;
-    }
-
-    if (modeVal === "save") {
-      dispatch(addUser({ id: Date.now(), userName, city, age }));
-    }
-
-    if (modeVal === "update") {
-      if (id == null) return;
-      dispatch(updateUser({ formData: { userName, city, age }, id }));
-      dispatch(selectIdNull());
-    }
-
-    dispatch(clearInputData());
-  };
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const field = e.target.name as keyof UserFormData;
-    const value: string | number =
-      field === "age" ? Number(e.target.value) : e.target.value;
-    dispatch(changeFormValue({ field, value }));
-  };
-
-  const handleDelete = (): void => {
-    if (id == null) return;
-    dispatch(deleteUser(id));
-    dispatch(selectIdNull());
-    dispatch(clearInputData());
-  };
-
   return (
     <div>
       <div>
         <h1>Redux Route</h1>
       </div>
       <div>
-        <form onSubmit={handleSubmit}>
-          <div>
-            {/* <label>Name: </label>
-            <input type="text" name="userName" value={formValue.userName ?? ""}
-            onChange={handleChange}
-            required /> */}
-            <Input
-              label="Name:"
-              type="text"
-              name="userName"
-              value={formValue.userName ?? ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            {/* <label>City: </label>
-            <input type="text" name="city" value={formValue.city ?? ""}
-            onChange={handleChange}
-            required /> */}
-            <Input
-              label="City:"
-              type="text"
-              name="city"
-              value={formValue.city ?? ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            {/* <label>Age: </label>
-              <input type="number" name="age" value={formValue.age ?? 0}
-                onChange={handleChange}
-              required /> */}
-            <Input
-              label="Age:"
-              type="number"
-              name="age"
-              value={formValue.age ?? 0}
-              onChange={handleChange}
-            />
-          </div>
+        <form
+          onSubmit={(e) =>
+            handleFormSubmit({
+              e,
+              mode: modeVal,
+              selectedId: id,
+              onAdd: (user) => dispatch(addUser(user)),
+              onUpdate: (uid, formData) => dispatch(updateUser({ formData, id: uid })),
+              onClear: () => dispatch(clearInputData()),
+              onDeselectId: () => dispatch(selectIdNull()),
+            })
+          }
+        >
+          <Input label="Name:" type="text" name="userName" value={formValue.userName ?? ""} onChange={(e) => handleFormChange(e, (field, value) => dispatch(changeFormValue({ field, value })))} />
+          <Input label="City:" type="text" name="city" value={formValue.city ?? ""} onChange={(e) => handleFormChange(e, (field, value) => dispatch(changeFormValue({ field, value })))} />
+          <Input label="Age:" type="number" name="age" value={formValue.age ?? 0} onChange={(e) => handleFormChange(e, (field, value) => dispatch(changeFormValue({ field, value })))} />
           <br />
           {modeVal === "save" && <Button type="submit" label="Save" />}
           {modeVal === "update" && (
             <div style={{ display: "flex", gap: "10px" }}>
-              {/* <button type="submit">Update</button> */}
               <Button type="submit" label="Update" />
-              <Button type="button" label="Delete" onClick={handleDelete} />
+              <Button
+                type="button"
+                label="Delete"
+                onClick={() =>
+                  handleFormDelete({
+                    selectedId: id,
+                    onDelete: (uid) => dispatch(deleteUser(uid)),
+                    onClear: () => dispatch(clearInputData()),
+                    onDeselectId: () => dispatch(selectIdNull()),
+                  })
+                }
+              />
             </div>
           )}
         </form>

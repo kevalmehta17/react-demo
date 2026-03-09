@@ -1,43 +1,15 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/UserStore";
-import type { User } from "../../../types/User";
+import UserTable from "../../../components/UserTable";
+import { getFilteredUsers } from "../../../utils/getFilterUnique";
 
 const UserTableList = () => {
   const users = useSelector((state: RootState) => state.users.users);
   const appliedFilter = useSelector((state: RootState) => state.filter.appliedFilter);
 
-  const filteredUsers: User[] =
-    appliedFilter.field && appliedFilter.uniqueVal !== ""
-      ? users.filter(
-          (user) =>
-            String(user[appliedFilter.field as keyof User]) === String(appliedFilter.uniqueVal)
-        )
-      : users;
-
   return (
     <div>
-      <div>
-        <h2>Table</h2>
-      </div>
-      <table border={1}>
-        <thead>
-          <tr>
-          
-            <th>Name</th>
-            <th>City</th>
-            <th>Age</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredUsers.map((user) => (
-            <tr key={user.id}>
-              <td>{user.userName}</td>
-              <td>{user.city}</td>
-              <td>{user.age}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <UserTable users={getFilteredUsers(users, appliedFilter)} />
     </div>
   );
 };

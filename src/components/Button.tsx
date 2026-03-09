@@ -1,12 +1,16 @@
-
-const Button = ({ type, label, onClick }) => {
-  return (
-    <div>
-      <button type={type} onClick={onClick}>
-        {label}
-      </button>
-    </div>
-  )
+interface ButtonProps {
+  type?: "button" | "submit" | "reset";
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
-export default Button
+const Button = ({ type = "button", label, onClick, disabled = false }: ButtonProps) => {
+  return (
+    <button type={type} onClick={onClick} disabled={disabled}>
+      {label}
+    </button>
+  );
+};
+
+export default Button;

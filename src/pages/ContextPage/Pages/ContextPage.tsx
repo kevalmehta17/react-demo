@@ -1,8 +1,8 @@
-import FilterPanel from "../components/FilterPanel.tsx"
-import UserForm from "../components/UserForm.tsx"
-import UserSelectId from "../components/UserSelectId.tsx"
-import UserTableList from "../components/UserTableList.tsx"
-import UserProvider from "../store/UserProvider.tsx"
+import UserProvider from "../store/UserProvider";
+import UserForm from "../components/UserForm";
+import UserSelectId from "../components/UserSelectId";
+import UserTableList from "../components/UserTableList";
+import FilterPanel from "../components/FilterPanel";
 
 const ContextPage = () => {
   return (
@@ -12,7 +12,7 @@ const ContextPage = () => {
       <FilterPanel />
       <UserTableList />
     </UserProvider>
-  )
-}
+  );
+};
 
 export default ContextPage;

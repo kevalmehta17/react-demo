@@ -1,80 +1,44 @@
 import { useContext } from "react";
-import UserContext from "../store/UserContext.tsx";
-import type { FormData, User } from "../../../types/User.ts";
+import type { User } from "../../../types/User";
+import { UserContext } from "../store/UserContext";
+import SelectDropdown from "../../../components/SelectDropdown";
+import Button from "../../../components/Button";
+import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../utils/getFilterUnique";
 
 const FilterPanel = () => {
-
-  const { state  , dispatch } = useContext(UserContext)!;
-  // console.log("state inside filterPanel", state);
-  console.log("re-rendering")
-  const fieldData = ["userName", "city", "age"];
-
-  const handleSelectField = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("event for field", e.target.value);
-    dispatch({ type: "CHANGE_FIELD", payload: e.target.value as keyof FormData });
-  };
-
-  const handleSelectValue = (e: React.ChangeEvent<HTMLSelectElement>) : void => {
-    console.log("event for option", e.target.value);
-    dispatch({type: "CHANGE_VALUE", payload: e.target.value});
-  };
-
-  const getFilterUnique = (): (string | number)[] => {
-    if (!state.selectField) return [];
-    const field = state.selectField as keyof User;
-    if (state.selectField === "age") {
-      const newUser = state.users.map((user : User) => user[field]);
-      return [...new Set(newUser)] as (number)[];
-    } else {
-      const newUser = state.users.map((user : User) =>
-        user[field].toString().toLowerCase(),
-      );
-      return [...new Set(newUser)] as (string)[];
-    }
-  };
-
-  const handleFilter = () => {
-    if(!state.selectField || !state.selectValue){
-      alert("Please Fill all the input field");
-      return;
-    }
-    dispatch({type:"HANDLE_FILTER_BUTTON"})
-  }
-
-  const handleAll = () => {
-    dispatch({type : "HANDLE_ALL_BUTTON"});
-  }
+  const context = useContext(UserContext);
+  if (!context) return null;
+  const { state, dispatch } = context;
+  const { users, selectField, selectValue } = state;
 
   return (
     <div>
-      <h2>Filters</h2>
       <div>
-        <div>
-          <label>Select Field: </label>
-          <select value={state.selectField ?? ""} onChange={handleSelectField}>
-            <option value="">Select Field</option>
-            {fieldData.map((data) => (
-              <option key={data} value={data}>
-                {data}
-              </option>
-            ))}
-          </select>
-        </div>{" "}
-        <br />
-        <div>
-          <label>Unique Value: </label>
-          <select value={state.selectValue ?? ""} onChange={handleSelectValue}>
-            <option value="">Select Value</option>
-            {getFilterUnique().map((user) => (
-              <option value={user} key={user}>{user}</option>
-            ))}
-          </select>
-        </div>
+        <h2>Filters</h2>
       </div>
+      <SelectDropdown
+        label="Select Field:"
+        value={selectField ?? ""}
+        onChange={(e) =>
+          dispatch({ type: "CHANGE_FIELD", payload: (e.target.value as keyof Omit<User, "id">) || null })
+        }
+        options={getFieldOptions()}
+        defaultOption="Select Field"
+      />
+      <br />
+      <SelectDropdown
+        label="Select Value:"
+        value={selectValue ?? ""}
+        onChange={(e) =>
+          dispatch({ type: "CHANGE_VALUE", payload: parseFilterValue(e.target.value, selectField) })
+        }
+        options={getValueOptions(users, selectField)}
+        defaultOption="Select Value"
+      />
       <br />
       <div style={{ display: "flex", gap: "10px" }}>
-        <button onClick={handleFilter}>Filter</button>
-        <button onClick={handleAll}>All</button>
+        <Button label="Filter" onClick={() => dispatch({ type: "HANDLE_FILTER_BUTTON" })} />
+        <Button label="All" onClick={() => dispatch({ type: "HANDLE_ALL_BUTTON" })} />
       </div>
     </div>
   );

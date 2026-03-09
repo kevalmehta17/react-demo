@@ -1,112 +1,59 @@
 import { useContext } from "react";
-import UserContext from "../store/UserContext.tsx";
+import { UserContext } from "../store/UserContext";
+import Input from "../../../components/Input";
+import Button from "../../../components/Button";
+import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../utils/userFormHandlers";
 
 const UserForm = () => {
-  const { state, dispatch } = useContext(UserContext);
-
-  const modeVal = state?.mode || "save";
-  console.log("mode val we got", modeVal);
-  console.log("added User list is", state.users);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-
-    const userName = (data.get("userName") as string).trim();
-    const city = (data.get("city") as string).trim();
-    const age = Number(data.get("age"));
-
-    if (!userName || !city || age <= 0) {
-      alert("Enter all data properly");
-      console.log("Enter all data properly");
-      return;
-    }
-    if (modeVal === "save") {
-      const formData = { id: +new Date(), userName, city, age };
-      console.log("the formData we got is", formData);
-      dispatch({ type: "ADD_USER", payload: formData });
-    }
-    if (modeVal === "update") {
-      const formData = { userName, city, age };
-      console.log("the formData we got is", formData);
-      console.log("the id we are dispatching is", state.selectedId);
-      dispatch({
-        type: "UPDATE_USER",
-        payload: formData,
-        id: state.selectedId,
-      });
-    }
-    const resetForm = e.currentTarget;
-    resetForm.reset();
-    dispatch({ type: "CLEAR_INPUT_DATA" });
-  };
-
-  const handleFormValue = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const findInputName = e.target.name;
-    console.log("findInputName", findInputName);
-    const valueToChange = e.target.value;
-    console.log("valueToChange", valueToChange);
-    dispatch({
-      type: "CHANGE_FORM_VALUE",
-      field: findInputName,
-      value: valueToChange,
-    });
-  };
-
-  const handleDelete = () => {
-    dispatch({ type: "DELETE_USER", payload: state.selectedId });
-    dispatch({ type: "CLEAR_INPUT_DATA" });
-  };
+  const context = useContext(UserContext);
+  if (!context) return null;
+  const { state, dispatch } = context;
+  const { formValue, mode, selectedId } = state;
 
   return (
     <div>
-      <h1>Context Route</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="userName"
-            value={state.formValue.userName ?? ""}
-            onChange={handleFormValue}
-            required
-          />
-        </div>
-        <div>
-          <label>City: </label>
-          <input
-            type="text"
-            name="city"
-            value={state.formValue.city ?? ""}
-            onChange={handleFormValue}
-            required
-          />
-        </div>
-        <div>
-          <label>Age: </label>
-          <input
-            type="number"
-            name="age"
-            value={state.formValue.age ?? ""}
-            onChange={handleFormValue}
-            required
-          />
-        </div>{" "}
-        <br />
-        <div>
-          {/* we have to dispatch action from state to show save or update-delete */}
-          {modeVal === "save" && <button type="submit">Save</button>}
-          {modeVal === "update" && (
-            <>
-              <button type="submit">Update</button>
-              <button type="button" onClick={handleDelete}>
-                Delete
-              </button>
-            </>
+      <div>
+        <h1>Context Route</h1>
+      </div>
+      <div>
+        <form
+          onSubmit={(e) =>
+            handleFormSubmit({
+              e,
+              mode,
+              selectedId,
+              onAdd: (user) => dispatch({ type: "ADD_USER", payload: user }),
+              onUpdate: (id, formData) => dispatch({ type: "UPDATE_USER", id, payload: formData }),
+              onClear: () => dispatch({ type: "CLEAR_INPUT_DATA" }),
+              onDeselectId: () => dispatch({ type: "SELECT_ID_NULL" }),
+            })
+          }
+        >
+          <Input label="Name:" type="text" name="userName" value={formValue.userName ?? ""} onChange={(e) => handleFormChange(e, (field, value) => dispatch({ type: "CHANGE_FORM_VALUE", field, value }))} />
+          <Input label="City:" type="text" name="city" value={formValue.city ?? ""} onChange={(e) => handleFormChange(e, (field, value) => dispatch({ type: "CHANGE_FORM_VALUE", field, value }))} />
+          <Input label="Age:" type="number" name="age" value={formValue.age ?? 0} onChange={(e) => handleFormChange(e, (field, value) => dispatch({ type: "CHANGE_FORM_VALUE", field, value }))} />
+          <br />
+          {mode === "save" && <Button type="submit" label="Save" />}
+          {mode === "update" && (
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Button type="submit" label="Update" />
+              <Button
+                type="button"
+                label="Delete"
+                onClick={() =>
+                  handleFormDelete({
+                    selectedId,
+                    onDelete: (id) => dispatch({ type: "DELETE_USER", payload: id }),
+                    onClear: () => dispatch({ type: "CLEAR_INPUT_DATA" }),
+                    onDeselectId: () => dispatch({ type: "SELECT_ID_NULL" }),
+                  })
+                }
+              />
+            </div>
           )}
-        </div>
-      </form>
-      <hr />
+        </form>
+        <hr />
+      </div>
     </div>
   );
 };

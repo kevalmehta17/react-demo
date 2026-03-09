@@ -1,7 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  selectField:  null,
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+
+interface FilterState {
+  selectField: string | null;
+  selectValue: string | number | null;
+  appliedFilter: {
+    field: string;
+    uniqueVal: string | number;
+  };
+}
+
+const initialState: FilterState = {
+  selectField: null,
   selectValue: null,
   appliedFilter: { field: "", uniqueVal: "" },
 };
@@ -10,20 +20,20 @@ export const FilterSlice = createSlice({
   name: "filter",
   initialState,
   reducers: {
-    changeField: (state, action) => {
-      state.selectValue  = null;
-      state.selectField  = action.payload;
-      console.log("after updating field", state.selectField);
+    changeField: (state, action: PayloadAction<string | null>) => {
+      state.selectValue = null;
+      state.selectField = action.payload;
     },
-    changeValue: (state, action) => {
+    changeValue: (state, action: PayloadAction<string | number | null>) => {
       state.selectValue = action.payload;
-      console.log("after updating value", state.selectValue);},
-
-    handleFilterButton: (state, action) => {
-      const {selectingField, selectingValue} = action.payload;
+    },
+    handleFilterButton: (
+      state,
+      action: PayloadAction<{ selectingField: string; selectingValue: string | number }>
+    ) => {
+      const { selectingField, selectingValue } = action.payload;
       state.appliedFilter.field = selectingField;
       state.appliedFilter.uniqueVal = selectingValue;
-      console.log("after updating applied filter", state.appliedFilter);
     },
     handleAllButton: (state) => {
       state.selectField = null;
@@ -34,6 +44,7 @@ export const FilterSlice = createSlice({
   },
 });
 
-export const {changeField, changeValue, handleFilterButton, handleAllButton} = FilterSlice.actions;
+export const { changeField, changeValue, handleFilterButton, handleAllButton } =
+  FilterSlice.actions;
 
 export default FilterSlice.reducer;

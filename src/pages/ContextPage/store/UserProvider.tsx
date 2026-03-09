@@ -1,114 +1,111 @@
-import { useReducer, type ReactNode } from "react";
-import UserContext from "./UserContext.tsx";
-import type { User, UserAction } from  "../../../types/User.ts";
-import type { InitialStateType } from "../../../types/User.ts";
+import { useReducer } from "react";
+import type { InitialStateType, UserAction } from "../../../types/User";
+import { UserContext } from "./UserContext";
 
-const initialState : InitialStateType = {
+const initialState: InitialStateType = {
   users: [],
   formValue: { userName: "", city: "", age: 0 },
   selectedId: null,
   mode: "save",
-  appliedFilter: {
-    field: null,
-    uniqueVal: "",
-  },
+  appliedFilter: { field: null, uniqueVal: "" },
   selectField: null,
   selectValue: null,
 };
 
-const reducerFun = (state : InitialStateType, action : UserAction) : InitialStateType => {
+function reducer(state: InitialStateType, action: UserAction): InitialStateType {
+  switch (action.type) {
+    case "ADD_USER":
+      return { ...state, users: [...state.users, action.payload] };
 
-  //   FOR ADDING USER TO USERS ARRAY
-  if (action.type === "ADD_USER") {
-    return { ...state, users: [...state.users, action.payload] };
-  }
-  //    FOR UPDATING USER IN USERS ARRAY
-  if (action.type === "UPDATE_USER") {
-    const updatedUsers = state.users.map((user : User) => {
-      if (user.id === action.id) {
-        return { ...user, ...action.payload };
-      }
-      return user;
-    });
-    console.log('inside upd', updatedUsers);
-    return { ...state, mode: "save", users: updatedUsers, selectedId : null};
-  }
+    case "UPDATE_USER": {
+      const updatedUsers = state.users.map((u) =>
+        u.id === action.id ? { ...u, ...action.payload } : u,
+      );
+      return { ...state, users: updatedUsers, mode: "save" };
+    }
 
-  //    FOR DELETING USER IN USERS ARRAY
-  if (action.type === "DELETE_USER") {
-    const updatedUser = state.users.filter((user : User) => user.id !== action.payload);
-    return { ...state, mode: "save", users: updatedUser, selectedId : null };
-  }
+    case "DELETE_USER":
+      return {
+        ...state,
+        users: state.users.filter((u) => u.id !== action.payload),
+        mode: "save",
+      };
 
-  
-  // FOR UPDATING INPUT VALUE AT EACH KEY STROKE
-  if (action.type === "CHANGE_FORM_VALUE") {
-    console.log("formvalue", state.formValue);
-    return {
-      ...state,
-      formValue: { ...state.formValue, [action.field]: action.value },
-    };
-  }
+    case "CHANGE_FORM_VALUE": {
+      const { field, value } = action;
+      return {
+        ...state,
+        formValue: {
+          ...state.formValue,
+          [field]: field === "age" ? Number(value) : value,
+        },
+      };
+    }
 
-  //  FOR DISPLAYING USER DETAIL BASED ON ID IN INPUT FIELD
-  if(action.type === "SELECT_ID"){
-    state.selectedId = action.payload;
-    console.log("state is", state);
-    return {...state};
-  }
+    case "SELECT_ID": {
+      const user = state.users.find((u) => u.id === action.payload);
+      return {
+        ...state,
+        selectedId: action.payload,
+        mode: "update",
+        formValue: user
+          ? { userName: user.userName, city: user.city, age: user.age }
+          : state.formValue,
+      };
+    }
 
-  // SHOW INPUT DATA INPUT FIELD
-  if(action.type === "SHOW_INPUT_DATA"){
-    const showData = state.users.find((user : User) =>  user.id === action.payload);
-    if(!showData) return state;
-    state.formValue = {userName : showData.userName, city: showData.city, age:showData.age};
-    return {...state, mode:"update"}
-  }
+    case "SHOW_INPUT_DATA": {
+      const user = state.users.find((u) => u.id === action.payload);
+      return {
+        ...state,
+        formValue: user
+          ? { userName: user.userName, city: user.city, age: user.age }
+          : state.formValue,
+        selectedId: action.payload,
+        mode: "update",
+      };
+    }
 
-  // CLEAR THE INPUT FIELD DATA
-  if(action.type === "CLEAR_INPUT_DATA"){
-    return {...state, formValue : {userName: "", city: "", age:0}};
-  }
+    case "CLEAR_INPUT_DATA":
+      return {
+        ...state,
+        formValue: { userName: "", city: "", age: 0 },
+        mode: "save",
+      };
 
-  // HANDLE CHANGE FIELD DATA
-  if(action.type === "CHANGE_FIELD"){
-    state.selectValue = null;
-    return {...state, selectField : action.payload};
-  }
-  // HANDLE CHANGE VALUE DATA
-  if(action.type === "CHANGE_VALUE"){
-    return {...state, selectValue : action.payload};
-  }
+    case "CHANGE_FIELD":
+      return { ...state, selectField: action.payload, selectValue: null };
 
-  // HANDLE FILTER BUTTON
-  if(action.type === "HANDLE_FILTER_BUTTON"){
-    state.appliedFilter.field = state.selectField;
-    state.appliedFilter.uniqueVal = state.selectValue ?? "";
-    return {...state};
+    case "CHANGE_VALUE":
+      return { ...state, selectValue: action.payload };
+
+    case "HANDLE_FILTER_BUTTON":
+      return {
+        ...state,
+        appliedFilter: {
+          field: state.selectField,
+          uniqueVal: state.selectValue ?? "",
+        },
+      };
+
+    case "HANDLE_ALL_BUTTON":
+      return {
+        ...state,
+        selectField: null,
+        selectValue: null,
+        appliedFilter: { field: null, uniqueVal: "" },
+      };
+
+    case "SELECT_ID_NULL":
+      return { ...state, selectedId: null, mode: "save" };
+
+    default:
+      return state;
   }
+}
 
-  // HANDLE ALL BUTTON
-  if(action.type === "HANDLE_ALL_BUTTON"){
-    state.appliedFilter.field = null;
-    state.appliedFilter.uniqueVal = "";
-    state.selectField = null;
-    state.selectValue = null;
-    console.log("after all", state);
-    return {...state};
-  }
-
-  // HANDLE NO ID SELECTED
-  if(action.type === "SELECT_ID_NULL"){
-    console.log("inside the SELECT_ID_NULL");
-    state.formValue = {userName : "", city: "", age : 0};
-    return {...state, selectedId : null, mode:"save"};
-  }
-
-  return state;
-};
-
-const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(reducerFun, initialState);
+const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
     <UserContext.Provider value={{ state, dispatch }}>

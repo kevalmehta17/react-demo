@@ -94,3 +94,13 @@ export type ReduxState = {
     };
   };
 };
+
+import type { ChangeEvent } from "react";
+
+export interface SelectDropdownProps {
+  label: string;
+  value: string | number;
+  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  options: { label: string; value: string | number }[];
+  defaultOption?: string;
+}

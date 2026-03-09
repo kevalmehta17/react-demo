@@ -1,13 +1,7 @@
 
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { User, FormData } from "../../../types/User";
+import type { User, FormData, UserState } from "../../../types/User";
 
-interface UserState {
-  users: User[];
-  formValue: FormData;
-  selectedId: number | null;
-  mode: "save" | "update";
-}
 
 const initialState: UserState = {
   users: [],

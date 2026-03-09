@@ -52,6 +52,22 @@ export type UserAction =
   | { type: "HANDLE_ALL_BUTTON" }
   | { type: "SELECT_ID_NULL" };
 
+  export interface FilterState {
+  selectField: string | null;
+  selectValue: string | number | null;
+  appliedFilter: {
+    field: string;
+    uniqueVal: string | number;
+  };
+}
+
+export interface UserState {
+  users: User[];
+  formValue: FormData;
+  selectedId: number | null;
+  mode: "save" | "update";
+}
+
 
 
 export interface UserFormProps {

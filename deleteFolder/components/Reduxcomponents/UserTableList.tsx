@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
+import type { RootState } from "../../../src/pages/ReduxPage/ReduxStore/UserStore";
 import UserTable from "../../../src/components/UserTable";
 import { getFilteredUsers } from "../../../src/utils/userFormHandlers";
 import { userColumns } from "../../../src/constants/userColumns";

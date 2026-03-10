@@ -1,4 +1,6 @@
-import type { InputProps } from "../types/User";
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
 
 const Input = ({ label, required = true, ...rest }: InputProps) => {
   return (

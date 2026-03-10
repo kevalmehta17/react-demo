@@ -1,6 +1,6 @@
 import { Provider } from "react-redux";
-import { store } from "./store/UserStore";
-import ReduxPageContent from "./ReduxPageContent";
+import { store } from "../../ReduxStore/UserStore.tsx";
+import ReduxPageContent from "./ReduxPageContent.tsx";
 
 const ReduxPage = () => {
   return (

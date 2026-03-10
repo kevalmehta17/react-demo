@@ -1,4 +1,4 @@
-import UserProvider from "../../contextStore/UserProvider";
+import UserProvider from "../../contextstore/UserProvider";
 import ContextPageContent from "./ContextPageContent";
 
 const ContextPage = () => {

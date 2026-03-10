@@ -1,20 +1,23 @@
-import type { User } from "../types/User";
 import SelectDropdown from "./SelectDropdown";
 import Button from "./Button";
-import { getFieldOptions, getValueOptions, parseFilterValue } from "../utils/userFormHandlers";
 
 interface FilterPanelProps {
-  users: User[];
-  selectField: string | null;
-  selectValue: string | number | null;
-  onChangeField: (field: string | null) => void;
-  onChangeValue: (value: string | number | null) => void;
-  onFilter: () => void;
-  onAll: () => void;
+  fieldOptions: { label: string; value: string }[]
+  valueOptions: { label: string; value: string | number }[]
+
+  selectField: string | null
+  selectValue: string | number | null
+
+  onChangeField: (field: string | null) => void
+  onChangeValue: (value: string | number | null) => void
+
+  onFilter: () => void
+  onAll: () => void
 }
 
 const FilterPanel = ({
-  users,
+  fieldOptions,
+  valueOptions,
   selectField,
   selectValue,
   onChangeField,
@@ -24,25 +27,28 @@ const FilterPanel = ({
 }: FilterPanelProps) => {
   return (
     <div>
-      <div>
-        <h2>Filters</h2>
-      </div>
+      <h2>Filters</h2>
+
       <SelectDropdown
         label="Select Field:"
         value={selectField ?? ""}
         onChange={(e) => onChangeField(e.target.value || null)}
-        options={getFieldOptions()}
+        options={fieldOptions}
         defaultOption="Select Field"
       />
+
       <br />
+
       <SelectDropdown
         label="Select Value:"
         value={selectValue ?? ""}
-        onChange={(e) => onChangeValue(parseFilterValue(e.target.value, selectField))}
-        options={getValueOptions(users, selectField)}
+        onChange={(e) => onChangeValue(e.target.value || null)}
+        options={valueOptions}
         defaultOption="Select Value"
       />
+
       <br />
+
       <div style={{ display: "flex", gap: "10px" }}>
         <Button label="Filter" onClick={onFilter} />
         <Button label="All" onClick={onAll} />

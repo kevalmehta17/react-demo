@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 // import type { FormData as UserFormData } from "../../../types/User";
-import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
+import type { RootState } from "../../../src/pages/ReduxPage/ReduxStore/UserStore";
 import {
   addUser,
   changeFormValue,
@@ -8,7 +8,7 @@ import {
   deleteUser,
   selectIdNull,
   updateUser,
-} from "../../../src/pages/ReduxPage/store/UserSlice";
+} from "../../../src/pages/ReduxPage/ReduxStore/UserSlice";
 import Input from "../../../src/components/Input";
 import Button from "../../../src/components/Button";
 import { handleFormSubmit, handleFormChange, handleFormDelete } from "../../../src/utils/userFormHandlers";

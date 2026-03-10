@@ -1,13 +1,13 @@
-import type { FormEvent } from "react";
-import type { FormData } from "../types/User";
-import Input from "./Input";
-import Button from "./Button";
-import { handleFormChange } from "../utils/userFormHandlers";
+import type { FormEvent } from 'react';
+import type { FormData } from '../types/User';
+import Input from './Input';
+import Button from './Button';
+import { handleFormChange } from "../utils/userFormHandlers"
 
 interface UserFormProps {
   title: string;
   formValue: FormData;
-  mode: "save" | "update";
+  mode: 'save' | 'update';
   selectedId: number | null;
   onChangeField: (field: keyof FormData, value: string | number) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -34,14 +34,14 @@ const UserForm = ({
             label="Name:"
             type="text"
             name="userName"
-            value={formValue.userName ?? ""}
+            value={formValue.userName ?? ''}
             onChange={(e) => handleFormChange(e, onChangeField)}
           />
           <Input
             label="City:"
             type="text"
             name="city"
-            value={formValue.city ?? ""}
+            value={formValue.city ?? ''}
             onChange={(e) => handleFormChange(e, onChangeField)}
           />
           <Input
@@ -52,9 +52,9 @@ const UserForm = ({
             onChange={(e) => handleFormChange(e, onChangeField)}
           />
           <br />
-          {mode === "save" && <Button type="submit" label="Save" />}
-          {mode === "update" && (
-            <div style={{ display: "flex", gap: "10px" }}>
+          {mode === 'save' && <Button type="submit" label="Save" />}
+          {mode === 'update' && (
+            <div style={{ display: 'flex', gap: '10px' }}>
               <Button type="submit" label="Update" />
               <Button
                 type="button"

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserContext } from "../../src/contextStore/UserContext";
+import { UserContext } from "../../src/contextstore/UserContext";
 import UserTable from "../../src/components/UserTable";
 import { getFilteredUsers } from "../../src/utils/userFormHandlers";
 import { userColumns } from "../../src/constants/userColumns";

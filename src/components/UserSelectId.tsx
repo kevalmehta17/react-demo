@@ -4,17 +4,13 @@ import SelectDropdown from "./SelectDropdown";
 interface UserSelectIdProps {
   users: User[];
   selectedId: number | null;
-  onSelectId: (id: number) => void;
-  onDeselectId: () => void;
-  onClear: () => void;
+  onChangeId: (id: number | null) => void;
 }
 
 const UserSelectId = ({
   users,
   selectedId,
-  onSelectId,
-  onDeselectId,
-  onClear,
+  onChangeId,
 }: UserSelectIdProps) => {
   const options = users.map((user) => ({
     label: String(user.id),
@@ -28,12 +24,7 @@ const UserSelectId = ({
         value={selectedId ?? ""}
         onChange={(e) => {
           const val = e.target.value;
-          if (!val) {
-            onDeselectId();
-            onClear();
-            return;
-          }
-          onSelectId(Number(val));
+          onChangeId(val ? Number(val) : null);
         }}
         options={options}
         defaultOption="Select ID"

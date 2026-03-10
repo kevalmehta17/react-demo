@@ -1,6 +1,12 @@
 
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { FilterState } from "../../../types/User";
+import type { AppliedFilter } from "../types/User";
+
+interface FilterState {
+  selectField: string | null;
+  selectValue: string | number | null;
+  appliedFilter: AppliedFilter;
+}
 
 const initialState: FilterState = {
   selectField: null,

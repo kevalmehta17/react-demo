@@ -1,4 +1,13 @@
-import type { SelectDropdownProps } from "../types/User";
+interface SelectDropdownProps {
+  label: string;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: {
+    label: string;
+    value: string | number;
+  }[];
+  defaultOption?: string;
+}
 
 const SelectDropdown = ({
   label,

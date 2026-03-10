@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import type { User } from "../../src/types/User";
-import { UserContext } from "../../src/contextStore/UserContext"
+import { UserContext } from "../../src/contextstore/UserContext"
 import SelectDropdown from "../../src/components/SelectDropdown";
 import Button from "../../src/components/Button";
 import { getFieldOptions, getValueOptions, parseFilterValue } from "../../src/utils/userFormHandlers";

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
-import { selectId, selectIdNull, clearInputData } from "../../../src/pages/ReduxPage/store/UserSlice";
+import type { RootState } from "../../../src/pages/ReduxPage/ReduxStore/UserStore";
+import { selectId, selectIdNull, clearInputData } from "../../../src/pages/ReduxPage/ReduxStore/UserSlice";
 import SelectDropdown from "../../../src/components/SelectDropdown";
 
 const UserSelectId = () => {

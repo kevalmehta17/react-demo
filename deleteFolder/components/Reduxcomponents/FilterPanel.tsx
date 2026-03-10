@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../../src/pages/ReduxPage/store/UserStore";
+import type { RootState } from "../../../src/pages/ReduxPage/ReduxStore/UserStore";
 import {
   changeField,
   changeValue,
   handleFilterButton,
   handleAllButton,
-} from "../../../src/pages/ReduxPage/store/FilterSlice";
+} from "../../../src/pages/ReduxPage/ReduxStore/FilterSlice";
 import SelectDropdown from "../../../src/components/SelectDropdown";
 import Button from "../../../src/components/Button";
 import { getFieldOptions, getValueOptions, parseFilterValue } from "../../../src/utils/userFormHandlers";

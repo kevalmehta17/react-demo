@@ -1,6 +1,35 @@
 import { useReducer } from "react";
-import type { InitialStateType, User, UserAction } from "../types/User";
+import type { User, FormData, AppliedFilter } from "../types/User";
 import { UserContext } from "./UserContext";
+
+export interface InitialStateType {
+  users: User[];
+  formValue: FormData;
+  selectedId: number | null;
+  mode: "save" | "update";
+  appliedFilter: AppliedFilter;
+  selectField: string | null;
+  selectValue: string | number | null;
+}
+
+export type UserContextType = {
+  state: InitialStateType;
+  dispatch: React.Dispatch<UserAction>;
+};
+
+export type UserAction =
+  | { type: "ADD_USER"; payload: User }
+  | { type: "UPDATE_USER"; id: number; payload: Partial<FormData> }
+  | { type: "DELETE_USER"; payload: number }
+  | { type: "CHANGE_FORM_VALUE"; field: keyof FormData; value: string | number }
+  | { type: "SELECT_ID"; payload: number }
+  | { type: "SHOW_INPUT_DATA"; payload: number }
+  | { type: "CLEAR_INPUT_DATA" }
+  | { type: "CHANGE_FIELD"; payload: keyof FormData | null }
+  | { type: "CHANGE_VALUE"; payload: string | number | null }
+  | { type: "HANDLE_FILTER_BUTTON" }
+  | { type: "HANDLE_ALL_BUTTON" }
+  | { type: "SELECT_ID_NULL" };
 
 const initialState: InitialStateType = {
   users: [],
@@ -21,7 +50,23 @@ function reducer(state: InitialStateType, action: UserAction): InitialStateType 
       const updatedUsers = state.users.map((u) =>
         u.id === action.id ? { ...u, ...action.payload } : u,
       );
-      return { ...state, users: updatedUsers, mode: "save" };
+
+      const matchAfterUpdate = state.appliedFilter.field
+        ? updatedUsers.some(
+            (u) =>
+              String(u[state.appliedFilter.field as keyof User]).toLowerCase() ===
+              String(state.appliedFilter.uniqueVal).toLowerCase()
+          )
+        : true;
+
+      return {
+        ...state,
+        users: updatedUsers,
+        mode: "save",
+        ...(matchAfterUpdate
+          ? {}
+          : { selectValue: null, appliedFilter: { field: null, uniqueVal: "" } }),
+      };
     }
 
     // ...existing code...
@@ -30,12 +75,11 @@ case "DELETE_USER": {
   const deletedId = action.payload;
   const remaining = state.users.filter((u) => u.id !== deletedId);
 
-  // check if filter value still valid
   const stillHasMatch = state.appliedFilter.field
     ? remaining.some(
         (u) =>
-          String(u[state.appliedFilter.field as keyof User]) ===
-          state.appliedFilter.uniqueVal
+          String(u[state.appliedFilter.field as keyof User]).toLowerCase() ===
+          String(state.appliedFilter.uniqueVal).toLowerCase()
       )
     : true;
 
@@ -45,7 +89,6 @@ case "DELETE_USER": {
     formValue: { userName: "", city: "", age: 0 },
     mode: "save",
     selectedId: null,
-    // keep selectField, reset selectValue if no match
     selectValue: stillHasMatch ? state.selectValue : null,
     appliedFilter: stillHasMatch
       ? state.appliedFilter
